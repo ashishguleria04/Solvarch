@@ -1,4 +1,4 @@
-import { Youtube, Clock, Database } from "lucide-react";
+import { Video, Clock, Database } from "lucide-react";
 import type { Difficulty } from "@prisma/client";
 import { DifficultyBadge } from "@/components/design-system/difficulty-badge";
 import { Markdown } from "@/components/design-system/markdown";
@@ -102,7 +102,7 @@ export function ProblemDescription({
           rel="noreferrer"
           className="mt-6 inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium transition-colors hover:border-primary/40 hover:text-primary"
         >
-          <Youtube className="size-4 text-rose-400" />
+          <Video className="size-4 text-rose-400" />
           Watch a video walkthrough
         </a>
       )}
