@@ -5,6 +5,10 @@ export type LanguageConfig = {
   label: string;
   monaco: string;
   piston: { language: string; version: string };
+  /** Paiza.IO language id (default execution provider). */
+  paiza: string;
+  /** Judge0 language id (used when JUDGE0 env is configured). */
+  judge0: number;
   ext: string;
 };
 
@@ -20,6 +24,8 @@ export const LANGUAGES: LanguageConfig[] = [
     label: "Python",
     monaco: "python",
     piston: { language: "python", version: "3.10.0" },
+    paiza: "python3",
+    judge0: 71,
     ext: "py",
   },
   {
@@ -27,6 +33,8 @@ export const LANGUAGES: LanguageConfig[] = [
     label: "JavaScript",
     monaco: "javascript",
     piston: { language: "javascript", version: "18.15.0" },
+    paiza: "javascript",
+    judge0: 63,
     ext: "js",
   },
   {
@@ -34,6 +42,8 @@ export const LANGUAGES: LanguageConfig[] = [
     label: "Java",
     monaco: "java",
     piston: { language: "java", version: "15.0.2" },
+    paiza: "java",
+    judge0: 62,
     ext: "java",
   },
   {
@@ -41,6 +51,8 @@ export const LANGUAGES: LanguageConfig[] = [
     label: "C++",
     monaco: "cpp",
     piston: { language: "c++", version: "10.2.0" },
+    paiza: "cpp",
+    judge0: 54,
     ext: "cpp",
   },
 ];
