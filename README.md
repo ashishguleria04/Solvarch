@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Solvarch
 
-## Getting Started
+A full-stack technical interview preparation platform. Solve curated DSA problems in an in-browser code editor, get judged against real test cases, and use AI to make hard concepts click.
 
-First, run the development server:
+## Features
+
+**DSA practice** — 141 hand-authored problems across 15 topics (Arrays through Bit Manipulation), each with a markdown statement, constraints, worked examples, progressive hints, an editorial, alternative approaches with complexity analysis, and a linked video.
+
+**In-browser judge** — a Monaco-based editor with starter code in Python, JavaScript, Java, and C++. Submissions run against hidden test cases through a pluggable execution backend (Paiza by default; Piston or Judge0 via config) and are verdict-graded: Accepted, Wrong Answer, TLE, Runtime Error, or Compile Error.
+
+**Trustworthy test data** — every problem ships with a reference solution in the seed. Expected outputs are *computed at seed time* by running the reference against each test input, so tests and solutions can never drift apart.
+
+**AI assist** — "explain this simpler" and "explain with an analogy" powered by Claude, available on any statement or editorial.
+
+**Progress tracking** — per-problem solved/attempted status, bookmarks, submission history, and daily activity for streaks.
+
+**Interview question bank** — behavioral, HR, and technical trivia questions with model answers and delivery tips.
+
+**Accounts & monetization** — Auth.js v5 (email/password + Google OAuth), free/pro tiers with per-problem premium gating (roughly the first 20% of each topic is free), and Stripe subscription plumbing.
+
+### Roadmap
+
+- System Design case studies (HLD/LLD, authored as MDX)
+- CS Fundamentals modules (OS, DBMS, Networks, OOP)
+- AI mock interviews (schema and dashboard entry points are in place)
+
+## Tech stack
+
+| Layer | Choice |
+| --- | --- |
+| Framework | Next.js 16 (App Router) · React 19 · TypeScript |
+| Styling | Tailwind CSS v4 · Radix UI · Framer Motion |
+| Database | PostgreSQL (Neon) via Prisma 6 |
+| Auth | Auth.js (NextAuth v5) with Prisma adapter |
+| Editor | Monaco (`@monaco-editor/react`) |
+| Code execution | Paiza.IO / Piston / Judge0 (env-selectable) |
+| AI | Anthropic Claude (`@anthropic-ai/sdk`) |
+| Payments | Stripe |
+
+## Getting started
+
+Requires Node.js 20+ and a Postgres database (a free [Neon](https://neon.tech) instance works).
 
 ```bash
+# 1. Install
+npm install
+
+# 2. Configure — copy the template and fill in at minimum
+#    DATABASE_URL and AUTH_SECRET (npx auth secret)
+cp .env.example .env
+
+# 3. Create the schema and seed 141 problems + the question bank
+npm run db:push
+npm run db:seed
+
+# 4. Run
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). Code execution works out of the box (Paiza's guest tier needs no key); AI features activate once `ANTHROPIC_API_KEY` is set, and billing once the Stripe keys are set. See [.env.example](.env.example) for every option.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` / `start` | Production build / serve |
+| `npm run lint` | ESLint |
+| `npm run db:push` | Push the Prisma schema to the database |
+| `npm run db:seed` | Seed topics, problems, test cases, and the question bank (idempotent) |
+| `npm run db:migrate` | Create/apply a dev migration |
+| `npm run db:studio` | Browse the database in Prisma Studio |
+| `npm run db:reset` | Drop, re-migrate, and re-seed |
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+```text
+prisma/
+  schema.prisma        # Users, subscriptions, topics, problems, test cases,
+                       # submissions, progress, interviews, question bank
+  seed/
+    topics.ts          # The 15-topic DSA taxonomy
+    problems/          # One file per topic; each problem includes a
+                       # reference solution that generates expected outputs
+    questions.ts       # Behavioral / HR / trivia question bank
+src/
+  app/
+    (marketing)/       # Landing page
+    (auth)/            # Login & registration
+    (app)/             # Dashboard and the DSA problem workspace
+    api/               # execute, submit, bookmark, auth, ai/explain
+  components/          # UI, editor workspace, problem views, design system
+  lib/
+    execution/         # Provider abstraction: paiza | piston | judge0
+    anthropic.ts       # Claude client + model selection
+    auth.ts            # Auth.js configuration
+    entitlements.ts    # Free vs. Pro gating
+  server/              # Data access: problems, judging, user stats
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## How judging works
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Problems are stdin → stdout. When a solution is submitted, the API runs it once per test case on the configured execution provider, normalizes output (trailing whitespace and newlines are ignored), and compares against the expected output that was generated by the reference solution at seed time. Sample tests are shown to the user; the rest stay hidden.

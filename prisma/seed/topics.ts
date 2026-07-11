@@ -1,10 +1,21 @@
 import type { SeedTopic } from "./types";
 import { arrays } from "./problems/arrays";
 import { strings } from "./problems/strings";
+import { twoPointers } from "./problems/two-pointers";
+import { slidingWindow } from "./problems/sliding-window";
+import { binarySearch } from "./problems/binary-search";
+import { stacksQueues } from "./problems/stacks-queues";
+import { linkedList } from "./problems/linked-list";
+import { trees } from "./problems/trees";
+import { tries } from "./problems/tries";
+import { heaps } from "./problems/heaps";
+import { backtracking } from "./problems/backtracking";
+import { graphs } from "./problems/graphs";
+import { greedy } from "./problems/greedy";
+import { dynamicProgramming } from "./problems/dynamic-programming";
+import { bitManipulation } from "./problems/bit-manipulation";
 
-// Full DSA taxonomy. Topics are seeded even when their problem set is still
-// being authored, so the tree/structure is complete. Content is added in
-// batches — `arrays` and `strings` are fully authored first.
+// Full DSA taxonomy, every topic wired to its authored problem set.
 export const dsaTopics: SeedTopic[] = [
   {
     slug: "arrays",
@@ -28,7 +39,7 @@ export const dsaTopics: SeedTopic[] = [
     description: "Converging and fast/slow pointer techniques on sorted data.",
     icon: "MoveHorizontal",
     order: 3,
-    problems: [],
+    problems: twoPointers,
   },
   {
     slug: "sliding-window",
@@ -36,7 +47,7 @@ export const dsaTopics: SeedTopic[] = [
     description: "Fixed and variable windows for subarray/substring problems.",
     icon: "RectangleHorizontal",
     order: 4,
-    problems: [],
+    problems: slidingWindow,
   },
   {
     slug: "binary-search",
@@ -44,7 +55,7 @@ export const dsaTopics: SeedTopic[] = [
     description: "Search on sorted arrays and on the answer space.",
     icon: "Search",
     order: 5,
-    problems: [],
+    problems: binarySearch,
   },
   {
     slug: "stacks-queues",
@@ -52,7 +63,7 @@ export const dsaTopics: SeedTopic[] = [
     description: "Monotonic stacks, queues, and expression parsing.",
     icon: "Layers",
     order: 6,
-    problems: [],
+    problems: stacksQueues,
   },
   {
     slug: "linked-list",
@@ -60,7 +71,7 @@ export const dsaTopics: SeedTopic[] = [
     description: "Pointer manipulation, cycle detection, and reversal.",
     icon: "Link2",
     order: 7,
-    problems: [],
+    problems: linkedList,
   },
   {
     slug: "trees",
@@ -68,7 +79,7 @@ export const dsaTopics: SeedTopic[] = [
     description: "Binary trees, BSTs, traversals, and recursion.",
     icon: "GitFork",
     order: 8,
-    problems: [],
+    problems: trees,
   },
   {
     slug: "tries",
@@ -76,7 +87,7 @@ export const dsaTopics: SeedTopic[] = [
     description: "Prefix trees for word and dictionary problems.",
     icon: "Network",
     order: 9,
-    problems: [],
+    problems: tries,
   },
   {
     slug: "heaps",
@@ -84,7 +95,7 @@ export const dsaTopics: SeedTopic[] = [
     description: "Top-K, streaming medians, and scheduling with heaps.",
     icon: "TriangleRight",
     order: 10,
-    problems: [],
+    problems: heaps,
   },
   {
     slug: "backtracking",
@@ -92,7 +103,7 @@ export const dsaTopics: SeedTopic[] = [
     description: "Systematic search over subsets, permutations, and boards.",
     icon: "Undo2",
     order: 11,
-    problems: [],
+    problems: backtracking,
   },
   {
     slug: "graphs",
@@ -100,7 +111,7 @@ export const dsaTopics: SeedTopic[] = [
     description: "BFS, DFS, topological sort, and union-find.",
     icon: "Waypoints",
     order: 12,
-    problems: [],
+    problems: graphs,
   },
   {
     slug: "greedy",
@@ -108,7 +119,7 @@ export const dsaTopics: SeedTopic[] = [
     description: "Locally optimal choices that yield global optima.",
     icon: "TrendingUp",
     order: 13,
-    problems: [],
+    problems: greedy,
   },
   {
     slug: "dynamic-programming",
@@ -116,7 +127,7 @@ export const dsaTopics: SeedTopic[] = [
     description: "Memoization and tabulation over overlapping subproblems.",
     icon: "Boxes",
     order: 14,
-    problems: [],
+    problems: dynamicProgramming,
   },
   {
     slug: "bit-manipulation",
@@ -124,6 +135,6 @@ export const dsaTopics: SeedTopic[] = [
     description: "XOR tricks, masks, and counting bits.",
     icon: "Binary",
     order: 15,
-    problems: [],
+    problems: bitManipulation,
   },
 ];
