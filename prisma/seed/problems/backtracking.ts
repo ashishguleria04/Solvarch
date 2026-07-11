@@ -137,7 +137,7 @@ export const backtracking: SeedProblem[] = [
 - 1 ≤ target ≤ 40`,
     examples: [
       { input: "2 3 6 7\n7", output: "2 2 3\n7" },
-      { input: "2 3 5\n8", output: "2 3 3\n3 5" },
+      { input: "2 3 5\n8", output: "2 2 2 2\n2 3 3\n3 5" },
       { input: "2\n1", output: "" },
     ],
     hints: [

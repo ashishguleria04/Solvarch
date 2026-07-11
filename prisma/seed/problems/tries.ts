@@ -211,7 +211,7 @@ export const tries: SeedProblem[] = [
 - 1 ≤ roots ≤ 1000; lowercase letters.`,
     examples: [
       { input: "the cattle was rattled by the battery\ncat bat rat", output: "the cat was rat by the bat" },
-      { input: "a aadsfasf absbs bbab cadsfafs\na b c", output: "a a b b c" },
+      { input: "a aadsfasf absbs bbab cadsfafs\na b c", output: "a a a b c" },
     ],
     hints: [
       "Checking every root against every word is O(words × roots × L).",

@@ -280,7 +280,7 @@ export const heaps: SeedProblem[] = [
     examples: [
       { input: "AAABBB\n2", output: "8", explanation: "A B idle A B idle A B." },
       { input: "AAABBB\n0", output: "6" },
-      { input: "AAAABBBBCCD\n2", output: "12" },
+      { input: "AAAABBBBCCD\n2", output: "11", explanation: "A B C A B C A B D A B — no idles needed." },
     ],
     hints: [
       "The most frequent task dictates the skeleton: (maxFreq − 1) gaps of size n + 1.",
