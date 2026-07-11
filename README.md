@@ -4,7 +4,7 @@ A full-stack technical interview preparation platform. Solve curated DSA problem
 
 ## Features
 
-**DSA practice** — 141 hand-authored problems across 15 topics (Arrays through Bit Manipulation), each with a markdown statement, constraints, worked examples, progressive hints, an editorial, alternative approaches with complexity analysis, and a linked video.
+**DSA practice** — 150 hand-authored problems across 15 topics (Arrays through Bit Manipulation), each with a markdown statement, constraints, worked examples, progressive hints, an editorial, alternative approaches with complexity analysis, and a linked video.
 
 **In-browser judge** — a Monaco-based editor with starter code in Python, JavaScript, Java, and C++. Submissions run against hidden test cases through a pluggable execution backend (Paiza by default; Piston or Judge0 via config) and are verdict-graded: Accepted, Wrong Answer, TLE, Runtime Error, or Compile Error.
 
@@ -49,7 +49,7 @@ npm install
 #    DATABASE_URL and AUTH_SECRET (npx auth secret)
 cp .env.example .env
 
-# 3. Create the schema and seed 141 problems + the question bank
+# 3. Create the schema and seed 150 problems + the question bank
 npm run db:push
 npm run db:seed
 

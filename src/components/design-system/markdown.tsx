@@ -1,6 +1,16 @@
+import { Children, isValidElement, type ReactElement } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
+import { MermaidDiagram } from "@/components/design-system/mermaid-diagram";
+
+function mermaidSource(children: unknown): string | null {
+  const arr = Children.toArray(children as React.ReactNode);
+  if (arr.length !== 1 || !isValidElement(arr[0])) return null;
+  const el = arr[0] as ReactElement<{ className?: string; children?: unknown }>;
+  if (!/language-mermaid/.test(el.props.className ?? "")) return null;
+  return String(el.props.children ?? "");
+}
 
 const components: Components = {
   h1: ({ children }) => (
@@ -55,11 +65,15 @@ const components: Components = {
       </code>
     );
   },
-  pre: ({ children }) => (
-    <pre className="my-4 overflow-x-auto rounded-lg border border-border bg-[#0b0b11] p-4 text-sm leading-relaxed scrollbar-thin">
-      {children}
-    </pre>
-  ),
+  pre: ({ children }) => {
+    const mermaid = mermaidSource(children);
+    if (mermaid !== null) return <MermaidDiagram chart={mermaid} />;
+    return (
+      <pre className="my-4 overflow-x-auto rounded-lg border border-border bg-[#0b0b11] p-4 text-sm leading-relaxed scrollbar-thin">
+        {children}
+      </pre>
+    );
+  },
   table: ({ children }) => (
     <div className="my-4 overflow-x-auto rounded-lg border border-border">
       <table className="w-full border-collapse text-sm">{children}</table>
