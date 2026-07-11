@@ -4,17 +4,10 @@ import { useState } from "react";
 import { Lightbulb, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Markdown } from "@/components/design-system/markdown";
+import { HintButton } from "@/components/ai/hint-button";
 
-export function ProblemHints({ hints }: { hints: string[] }) {
+export function ProblemHints({ hints, slug }: { hints: string[]; slug: string }) {
   const [revealed, setRevealed] = useState(0);
-
-  if (hints.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        No hints available for this problem.
-      </p>
-    );
-  }
 
   return (
     <div className="space-y-3">
@@ -43,8 +36,16 @@ export function ProblemHints({ hints }: { hints: string[] }) {
         </Button>
       ) : (
         <p className="text-center text-xs text-muted-foreground">
-          You&apos;ve revealed all hints.
+          {hints.length === 0
+            ? "No written hints for this problem — ask the AI below."
+            : "You've revealed all written hints."}
         </p>
+      )}
+
+      {/* AI hints unlock once the written ones are exhausted, so learners
+          climb the ladder before reaching for generated help. */}
+      {revealed >= hints.length && (
+        <HintButton slug={slug} staticCount={hints.length} />
       )}
     </div>
   );

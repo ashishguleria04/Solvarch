@@ -83,7 +83,7 @@ export default async function ProblemPage({
           complexitySpace={problem.complexitySpace}
         />
       }
-      hints={<ProblemHints hints={hints} />}
+      hints={<ProblemHints hints={hints} slug={problem.slug} />}
     />
   );
 
