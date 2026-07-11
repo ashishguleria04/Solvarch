@@ -1,6 +1,6 @@
 import type { SeedProblem } from "../types";
 import { buildStarter } from "../starters";
-import { ints, int, boolOut, arrOut, yt } from "../ref-utils";
+import { ints, int, boolOut, arrOut, yt, lines, matOut } from "../ref-utils";
 
 const first = (s: string) => ints(s.split("\n")[0]);
 
@@ -380,6 +380,231 @@ export const arrays: SeedProblem[] = [
       { input: "-2", },
       { input: "2 -5 -2 -4 3", },
       { input: "3 -1 4", },
+    ],
+  },
+
+  {
+    slug: "merge-intervals",
+    title: "Merge Intervals",
+    difficulty: "MEDIUM",
+    statement: `Given a list of intervals \`[start, end]\`, merge all overlapping intervals and return the result sorted by start.
+
+**Input**
+- Line 1: two integers \`n 2\` (n intervals)
+- Next n lines: \`start end\`
+
+**Output**: the merged intervals, one per line as \`start end\`.`,
+    constraints: `- 1 ≤ n ≤ 10^4
+- 0 ≤ start ≤ end ≤ 10^4`,
+    examples: [
+      {
+        input: "4 2\n1 3\n2 6\n8 10\n15 18",
+        output: "1 6\n8 10\n15 18",
+        explanation: "[1,3] and [2,6] overlap → [1,6].",
+      },
+      { input: "2 2\n1 4\n4 5", output: "1 5", explanation: "Touching endpoints merge." },
+    ],
+    hints: [
+      "Sort by start — overlapping intervals become neighbors.",
+      "Extend the current merged interval while the next one starts at or before its end.",
+    ],
+    editorial: `Sort by start, then sweep: keep a current merged interval and either **extend** it (next start ≤ current end → end = max of ends) or **emit** it and start fresh. Sorting is the insight that turns pairwise overlap checks into one linear pass. O(n log n) time, O(n) output.`,
+    complexityTime: "O(n log n)",
+    complexitySpace: "O(n)",
+    youtubeUrl: yt("neetcode merge intervals"),
+    tags: ["array", "intervals", "sorting"],
+    starterCode: buildStarter("matrix", "intMatrix", "mergeIntervals"),
+    reference: (input) => {
+      const ls = lines(input);
+      const [n] = ints(ls[0]);
+      const iv: number[][] = [];
+      for (let i = 0; i < n; i++) iv.push(ints(ls[1 + i]));
+      iv.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+      const out: number[][] = [];
+      for (const [s, e] of iv) {
+        if (out.length && s <= out[out.length - 1][1]) {
+          out[out.length - 1][1] = Math.max(out[out.length - 1][1], e);
+        } else {
+          out.push([s, e]);
+        }
+      }
+      return matOut(out);
+    },
+    tests: [
+      { input: "4 2\n1 3\n2 6\n8 10\n15 18", sample: true },
+      { input: "2 2\n1 4\n4 5", sample: true },
+      { input: "1 2\n0 0" },
+      { input: "3 2\n5 6\n1 2\n3 4" },
+      { input: "3 2\n1 10\n2 3\n4 5" },
+    ],
+  },
+
+  {
+    slug: "insert-interval",
+    title: "Insert Interval",
+    difficulty: "MEDIUM",
+    statement: `You are given non-overlapping intervals sorted by start, plus one new interval. Insert the new interval and merge as needed so the result stays sorted and non-overlapping.
+
+**Input**
+- Line 1: \`n 2\`
+- Next n lines: the existing intervals
+- Last line: the new interval \`start end\`
+
+**Output**: the resulting intervals, one per line.`,
+    constraints: `- 0 ≤ n ≤ 10^4
+- Intervals sorted by start, non-overlapping.`,
+    examples: [
+      { input: "2 2\n1 3\n6 9\n2 5", output: "1 5\n6 9" },
+      {
+        input: "5 2\n1 2\n3 5\n6 7\n8 10\n12 16\n4 8",
+        output: "1 2\n3 10\n12 16",
+        explanation: "The new [4,8] swallows [3,5], [6,7], [8,10].",
+      },
+    ],
+    hints: [
+      "Three phases: intervals entirely before, the overlapping middle, entirely after.",
+      "Fold every overlapping interval into the new one by min/max of endpoints.",
+    ],
+    editorial: `Emit intervals ending before the new one starts; then absorb every interval that overlaps it (\`newStart = min\`, \`newEnd = max\`); then emit the merged interval and everything after. Sortedness makes each phase a contiguous scan — one O(n) pass, no re-sort needed.`,
+    complexityTime: "O(n)",
+    complexitySpace: "O(n)",
+    youtubeUrl: yt("neetcode insert interval"),
+    tags: ["array", "intervals"],
+    starterCode: buildStarter("matrixK", "intMatrix", "insertInterval"),
+    reference: (input) => {
+      const ls = lines(input);
+      const [n] = ints(ls[0]);
+      const iv: number[][] = [];
+      for (let i = 0; i < n; i++) iv.push(ints(ls[1 + i]));
+      let [ns, ne] = ints(ls[1 + n]);
+      const out: number[][] = [];
+      let i = 0;
+      while (i < n && iv[i][1] < ns) out.push(iv[i++]);
+      while (i < n && iv[i][0] <= ne) {
+        ns = Math.min(ns, iv[i][0]);
+        ne = Math.max(ne, iv[i][1]);
+        i++;
+      }
+      out.push([ns, ne]);
+      while (i < n) out.push(iv[i++]);
+      return matOut(out);
+    },
+    tests: [
+      { input: "2 2\n1 3\n6 9\n2 5", sample: true },
+      { input: "5 2\n1 2\n3 5\n6 7\n8 10\n12 16\n4 8", sample: true },
+      { input: "0 2\n5 7" },
+      { input: "1 2\n1 5\n2 3" },
+      { input: "2 2\n1 2\n8 9\n4 5" },
+    ],
+  },
+
+  {
+    slug: "rotate-array",
+    title: "Rotate Array",
+    difficulty: "EASY",
+    statement: `Rotate the array \`nums\` to the right by \`k\` steps and return it.
+
+**Input**
+- Line 1: space-separated integers \`nums\`
+- Line 2: integer \`k\` (k ≥ 0)
+
+**Output**: the rotated array, space-separated.`,
+    constraints: `- 1 ≤ nums.length ≤ 10^5
+- 0 ≤ k ≤ 10^5`,
+    examples: [
+      { input: "1 2 3 4 5 6 7\n3", output: "5 6 7 1 2 3 4" },
+      { input: "-1 -100 3 99\n2", output: "3 99 -1 -100" },
+    ],
+    hints: [
+      "k can exceed the length — reduce it modulo n.",
+      "The O(1)-space trick: reverse the whole array, then reverse both halves.",
+    ],
+    editorial: `Take \`k mod n\` first. The elegant in-place method is **three reversals**: reverse everything, then reverse the first k elements, then the rest — each element lands exactly k positions right of where it started (cyclically). O(n) time, O(1) space.`,
+    approaches: [
+      {
+        name: "Extra array",
+        complexityTime: "O(n)",
+        complexitySpace: "O(n)",
+        body: "result[(i + k) % n] = nums[i].",
+      },
+      {
+        name: "Three reversals",
+        complexityTime: "O(n)",
+        complexitySpace: "O(1)",
+        body: "Reverse all, reverse first k, reverse the remainder.",
+      },
+    ],
+    complexityTime: "O(n)",
+    complexitySpace: "O(1)",
+    youtubeUrl: yt("rotate array three reversals"),
+    tags: ["array", "two-pointers", "math"],
+    starterCode: buildStarter("intArrayK", "intArray", "rotate"),
+    reference: (input) => {
+      const [l0, l1] = lines(input);
+      const nums = ints(l0);
+      const k = int(l1) % nums.length;
+      return arrOut([...nums.slice(nums.length - k), ...nums.slice(0, nums.length - k)]);
+    },
+    tests: [
+      { input: "1 2 3 4 5 6 7\n3", sample: true },
+      { input: "-1 -100 3 99\n2", sample: true },
+      { input: "1\n0" },
+      { input: "1 2\n3" },
+      { input: "1 2 3\n3" },
+    ],
+  },
+
+  {
+    slug: "first-missing-positive",
+    title: "First Missing Positive",
+    difficulty: "HARD",
+    statement: `Given an unsorted integer array, return the smallest **positive** integer not present. Your algorithm must run in O(n) time and O(1) extra space.
+
+**Input**: one line of space-separated integers.
+**Output**: the smallest missing positive.`,
+    constraints: `- 1 ≤ nums.length ≤ 10^5
+- -2^31 ≤ nums[i] ≤ 2^31 − 1`,
+    examples: [
+      { input: "1 2 0", output: "3" },
+      { input: "3 4 -1 1", output: "2" },
+      { input: "7 8 9 11 12", output: "1" },
+    ],
+    hints: [
+      "The answer is always in [1, n+1] — values outside that range are irrelevant.",
+      "Use the array itself as a hash table: value v belongs at index v−1.",
+      "Cyclic sort: keep swapping nums[i] to its home slot until it can't move.",
+    ],
+    editorial: `Key fact: with n elements the answer lies in \`[1, n+1]\`. **Cyclic sort** places each value v ∈ [1, n] at index v−1 by repeated swapping (each swap homes at least one value, so total swaps ≤ n). A final scan finds the first index i where \`nums[i] ≠ i+1\` — that i+1 is the answer; if all match, it's n+1. O(n) time, O(1) space, using the array itself as the hash table.`,
+    complexityTime: "O(n)",
+    complexitySpace: "O(1)",
+    youtubeUrl: yt("neetcode first missing positive"),
+    tags: ["array", "hash-table", "cyclic-sort"],
+    starterCode: buildStarter("intArray", "int", "firstMissingPositive"),
+    reference: (input) => {
+      const nums = first(input);
+      const n = nums.length;
+      for (let i = 0; i < n; i++) {
+        while (
+          nums[i] > 0 &&
+          nums[i] <= n &&
+          nums[nums[i] - 1] !== nums[i]
+        ) {
+          const j = nums[i] - 1;
+          [nums[i], nums[j]] = [nums[j], nums[i]];
+        }
+      }
+      for (let i = 0; i < n; i++) {
+        if (nums[i] !== i + 1) return String(i + 1);
+      }
+      return String(n + 1);
+    },
+    tests: [
+      { input: "1 2 0", sample: true },
+      { input: "3 4 -1 1", sample: true },
+      { input: "7 8 9 11 12", sample: true },
+      { input: "1" },
+      { input: "2" },
+      { input: "1 1" },
     ],
   },
 ];
