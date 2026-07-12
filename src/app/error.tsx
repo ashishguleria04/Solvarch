@@ -22,7 +22,7 @@ export default function GlobalError({
       </div>
       <h1 className="text-lg font-semibold tracking-tight">Something broke</h1>
       <p className="max-w-md text-sm text-muted-foreground">
-        An unexpected error occurred. It's been logged — try again, and if it
+        An unexpected error occurred. It&apos;s been logged — try again, and if it
         keeps happening, refresh the page.
       </p>
       {error.digest && (

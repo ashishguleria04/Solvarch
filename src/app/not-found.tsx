@@ -10,10 +10,10 @@ export default function NotFound() {
       </div>
       <p className="font-mono text-sm text-muted-foreground">404</p>
       <h1 className="text-lg font-semibold tracking-tight">
-        This page doesn't exist
+        This page doesn&apos;t exist
       </h1>
       <p className="max-w-md text-sm text-muted-foreground">
-        The page you're looking for was moved, renamed, or never existed.
+        The page you&apos;re looking for was moved, renamed, or never existed.
       </p>
       <div className="flex gap-2">
         <Button asChild variant="glow" size="sm">
