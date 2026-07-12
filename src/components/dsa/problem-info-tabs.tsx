@@ -3,17 +3,12 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookmarkButton } from "@/components/dsa/bookmark-button";
 
 export function ProblemInfoTabs({
-  problemId,
-  bookmarked,
   description,
   editorial,
   hints,
 }: {
-  problemId: string;
-  bookmarked: boolean;
   description: React.ReactNode;
   editorial: React.ReactNode;
   hints: React.ReactNode;
@@ -28,7 +23,6 @@ export function ProblemInfoTabs({
           <ArrowLeft className="size-4" />
           Problems
         </Link>
-        <BookmarkButton problemId={problemId} initial={bookmarked} />
       </div>
 
       <Tabs defaultValue="description" className="flex min-h-0 flex-1 flex-col gap-0">

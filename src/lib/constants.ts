@@ -68,6 +68,5 @@ export const PRODUCT_NAV = [
   { label: "DSA", href: "/dsa" },
   { label: "System Design", href: "/system-design" },
   { label: "CS Fundamentals", href: "/cs" },
-  { label: "Mock Interviews", href: "/interviews" },
-  { label: "Pricing", href: "/pricing" },
+  { label: "Question Bank", href: "/questions" },
 ] as const;

@@ -3,14 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
   Code2,
   Network,
   Cpu,
-  Bot,
   MessagesSquare,
-  Bookmark,
-  Settings,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -18,21 +14,13 @@ import { cn } from "@/lib/utils";
 type NavItem = { label: string; href: string; icon: LucideIcon };
 
 export const APP_NAV: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "DSA Problems", href: "/dsa", icon: Code2 },
   { label: "System Design", href: "/system-design", icon: Network },
   { label: "CS Fundamentals", href: "/cs", icon: Cpu },
-  { label: "Mock Interviews", href: "/interviews", icon: Bot },
   { label: "Question Bank", href: "/questions", icon: MessagesSquare },
-  { label: "Bookmarks", href: "/bookmarks", icon: Bookmark },
-];
-
-export const APP_NAV_FOOTER: NavItem[] = [
-  { label: "Settings", href: "/settings", icon: Settings },
 ];
 
 function isActive(pathname: string, href: string) {
-  if (href === "/dashboard") return pathname === "/dashboard";
   return pathname === href || pathname.startsWith(href + "/");
 }
 
@@ -67,9 +55,6 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col">
       <nav className="flex flex-1 flex-col gap-1">{APP_NAV.map(renderItem)}</nav>
-      <nav className="flex flex-col gap-1 border-t border-border pt-3">
-        {APP_NAV_FOOTER.map(renderItem)}
-      </nav>
     </div>
   );
 }

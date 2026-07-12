@@ -11,22 +11,6 @@ const groups = [
       { label: "Question Bank", href: "/questions" },
     ],
   },
-  {
-    title: "Practice",
-    links: [
-      { label: "Mock Interviews", href: "/interviews" },
-      { label: "Dashboard", href: "/dashboard" },
-      { label: "Bookmarks", href: "/bookmarks" },
-    ],
-  },
-  {
-    title: "Product",
-    links: [
-      { label: "Pricing", href: "/pricing" },
-      { label: "Log in", href: "/login" },
-      { label: "Get started", href: "/register" },
-    ],
-  },
 ];
 
 export function SiteFooter() {
@@ -36,7 +20,8 @@ export function SiteFooter() {
         <div className="col-span-2 md:col-span-1">
           <Logo />
           <p className="mt-3 max-w-xs text-sm text-muted-foreground">
-            The all-in-one platform to master the technical interview.
+            Free, open interview prep — DSA, system design, and CS fundamentals in
+            one focused workspace.
           </p>
         </div>
         {groups.map((group) => (

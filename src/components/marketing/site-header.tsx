@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sheet";
 import { PRODUCT_NAV } from "@/lib/constants";
 
-export function SiteHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
+export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
@@ -36,20 +36,9 @@ export function SiteHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
         </div>
 
         <div className="hidden items-center gap-2 md:flex">
-          {isAuthenticated ? (
-            <Button asChild variant="glow" size="sm">
-              <Link href="/dashboard">Dashboard</Link>
-            </Button>
-          ) : (
-            <>
-              <Button asChild variant="ghost" size="sm">
-                <Link href="/login">Log in</Link>
-              </Button>
-              <Button asChild variant="glow" size="sm">
-                <Link href="/register">Get started</Link>
-              </Button>
-            </>
-          )}
+          <Button asChild variant="glow" size="sm">
+            <Link href="/dsa">Start solving</Link>
+          </Button>
         </div>
 
         {/* Mobile */}
@@ -78,20 +67,9 @@ export function SiteHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
                 ))}
               </nav>
               <div className="mt-4 flex flex-col gap-2 px-4">
-                {isAuthenticated ? (
-                  <Button asChild variant="glow">
-                    <Link href="/dashboard">Dashboard</Link>
-                  </Button>
-                ) : (
-                  <>
-                    <Button asChild variant="outline">
-                      <Link href="/login">Log in</Link>
-                    </Button>
-                    <Button asChild variant="glow">
-                      <Link href="/register">Get started</Link>
-                    </Button>
-                  </>
-                )}
+                <Button asChild variant="glow">
+                  <Link href="/dsa">Start solving</Link>
+                </Button>
               </div>
             </SheetContent>
           </Sheet>

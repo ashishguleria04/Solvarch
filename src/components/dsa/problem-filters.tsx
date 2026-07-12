@@ -78,21 +78,6 @@ export function ProblemFilters({
           <SelectItem value="HARD">Hard</SelectItem>
         </SelectContent>
       </Select>
-
-      <Select
-        value={params.get("status") ?? ALL}
-        onValueChange={(v) => setParam("status", v)}
-      >
-        <SelectTrigger className="w-full sm:w-36">
-          <SelectValue placeholder="Status" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value={ALL}>Any status</SelectItem>
-          <SelectItem value="solved">Solved</SelectItem>
-          <SelectItem value="attempted">Attempted</SelectItem>
-          <SelectItem value="todo">Todo</SelectItem>
-        </SelectContent>
-      </Select>
     </div>
   );
 }

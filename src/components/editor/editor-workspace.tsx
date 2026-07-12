@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
   Play,
   Check,
   Loader2,
   RotateCcw,
-  Lock,
   CheckCircle2,
   XCircle,
   AlertTriangle,
@@ -22,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CodeEditor } from "@/components/editor/code-editor";
-import { LANGUAGES } from "@/lib/constants";
+import { LANGUAGES, DEFAULT_LANGUAGE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 type StarterCode = Record<string, string>;
@@ -63,19 +61,13 @@ const VERDICT_LABEL: Record<string, string> = {
 export function EditorWorkspace({
   slug,
   starterCode,
-  allowedLanguages,
-  isPro,
   onSolved,
 }: {
   slug: string;
   starterCode: StarterCode;
-  allowedLanguages: string[];
-  isPro: boolean;
   onSolved?: () => void;
 }) {
-  const [language, setLanguage] = useState(
-    allowedLanguages.includes("python") ? "python" : allowedLanguages[0] ?? "python"
-  );
+  const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
   const [codeByLang, setCodeByLang] = useState<StarterCode>({ ...starterCode });
   const [running, setRunning] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -156,28 +148,13 @@ export function EditorWorkspace({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {LANGUAGES.map((l) => {
-              const locked = !allowedLanguages.includes(l.id);
-              return (
-                <SelectItem key={l.id} value={l.id} disabled={locked}>
-                  <span className="flex items-center gap-1.5">
-                    {l.label}
-                    {locked && <Lock className="size-3 text-muted-foreground" />}
-                  </span>
-                </SelectItem>
-              );
-            })}
+            {LANGUAGES.map((l) => (
+              <SelectItem key={l.id} value={l.id}>
+                {l.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
-
-        {!isPro && (
-          <Link
-            href="/pricing"
-            className="hidden text-xs text-muted-foreground hover:text-primary sm:inline"
-          >
-            Unlock all languages →
-          </Link>
-        )}
 
         <div className="ml-auto flex items-center gap-2">
           <Button variant="ghost" size="icon-sm" onClick={reset} title="Reset code">
