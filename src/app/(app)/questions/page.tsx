@@ -7,6 +7,10 @@ import { QuestionBank } from "@/components/questions/question-bank";
 
 export const metadata: Metadata = { title: "Question Bank" };
 
+// Reads the question bank from the database at request time, so it must never
+// be prerendered at build (the build worker has no DB access).
+export const dynamic = "force-dynamic";
+
 export default async function QuestionsPage() {
   const items = await getQuestionBank();
 

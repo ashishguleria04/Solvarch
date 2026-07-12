@@ -12,6 +12,9 @@ import {
 import { ProblemHints } from "@/components/dsa/problem-hints";
 import { EditorWorkspace } from "@/components/editor/editor-workspace";
 
+// DB-backed (problem lookup by slug); render per request, never prerender at build.
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {

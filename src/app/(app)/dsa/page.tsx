@@ -9,6 +9,9 @@ import { ProblemList } from "@/components/dsa/problem-list";
 
 export const metadata: Metadata = { title: "DSA Problems" };
 
+// DB-backed (problems + topics); render per request, never prerender at build.
+export const dynamic = "force-dynamic";
+
 type SearchParams = {
   topic?: string;
   difficulty?: string;
