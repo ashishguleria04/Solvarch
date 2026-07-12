@@ -16,13 +16,13 @@ A full-stack technical interview preparation platform. Solve curated DSA problem
 
 **Interview question bank** — behavioral, HR, and technical trivia questions with model answers and delivery tips.
 
-**Accounts & monetization** — Auth.js v5 (email/password + Google OAuth), free/pro tiers with per-problem premium gating (roughly the first 20% of each topic is free), and Stripe subscription plumbing.
+**System Design** — 20 case studies and concept guides (HLD + LLD, from load balancing to "design Netflix"), authored as markdown with frontmatter and rendered with Mermaid diagrams.
 
-### Roadmap
+**CS Fundamentals** — OS, DBMS, Networks, and OOP modules with per-topic deep dives.
 
-- System Design case studies (HLD/LLD, authored as MDX)
-- CS Fundamentals modules (OS, DBMS, Networks, OOP)
-- AI mock interviews (schema and dashboard entry points are in place)
+**AI mock interviews** — live chat interviews (behavioral, HR, or technical) with Claude as the interviewer, streamed replies, and a structured feedback report at the end. Free tier gets one per month.
+
+**Accounts & monetization** — Auth.js v5 (email/password + Google OAuth), free/pro tiers with per-problem premium gating (roughly the first 20% of each topic is free), and Stripe subscriptions with checkout, billing portal, and webhook sync.
 
 ## Tech stack
 
