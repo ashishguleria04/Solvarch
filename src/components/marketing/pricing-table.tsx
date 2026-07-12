@@ -28,8 +28,8 @@ const PRO_FEATURES = [
 ];
 
 const PRICES = {
-  monthly: { amount: 15, per: "/month", note: "billed monthly" },
-  annual: { amount: 9, per: "/month", note: "billed $108 yearly — save 40%" },
+  monthly: { amount: "1,500", per: "/month", note: "billed monthly" },
+  annual: { amount: "900", per: "/month", note: "billed ₹10,800 yearly — save 40%" },
 } as const;
 
 export function PricingTable({
@@ -96,7 +96,7 @@ export function PricingTable({
         <div className="rounded-2xl border border-border bg-card/40 p-7">
           <h2 className="font-semibold">Free</h2>
           <div className="mt-3 flex items-baseline gap-1">
-            <span className="text-4xl font-bold tracking-tight">$0</span>
+            <span className="text-4xl font-bold tracking-tight">₹0</span>
             <span className="text-sm text-muted-foreground">forever</span>
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -128,7 +128,7 @@ export function PricingTable({
           </div>
           <div className="mt-3 flex items-baseline gap-1">
             <span className="text-4xl font-bold tracking-tight">
-              ${price.amount}
+              ₹{price.amount}
             </span>
             <span className="text-sm text-muted-foreground">{price.per}</span>
           </div>
