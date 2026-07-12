@@ -20,19 +20,19 @@ export const metadata: Metadata = {
     template: "%s · Solvarch",
   },
   description:
-    "Solvarch is the all-in-one platform to master DSA, System Design, and CS fundamentals — with an integrated code editor, AI mock interviews, and curated content.",
+    "Solvarch is a free, open platform to master DSA, System Design, and CS fundamentals — with an integrated code editor, a real judge, and a curated interview question bank. No sign-up, no paywall.",
   keywords: [
     "interview preparation",
     "DSA",
     "system design",
     "coding interview",
     "leetcode alternative",
-    "mock interview",
+    "free coding practice",
   ],
   openGraph: {
     title: "Solvarch — Master the Tech Interview",
     description:
-      "Master DSA, System Design, and CS fundamentals with an integrated editor and AI mock interviews.",
+      "Free, open interview prep — master DSA, System Design, and CS fundamentals with an integrated editor and a real judge. No sign-up, no paywall.",
     type: "website",
   },
 };

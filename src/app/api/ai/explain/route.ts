@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { auth } from "@/lib/auth";
 import { getAnthropic, isAiConfigured, MODELS, textFromMessage } from "@/lib/anthropic";
 
 export const maxDuration = 30;
@@ -12,11 +11,6 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   if (!isAiConfigured()) {
     return NextResponse.json(
       { error: "AI features aren't configured yet. Add an Anthropic API key." },

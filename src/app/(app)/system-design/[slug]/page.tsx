@@ -2,15 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, PlayCircle } from "lucide-react";
-import {
-  getSystemDesignEntries,
-  getSystemDesignEntry,
-  splitPreview,
-} from "@/lib/content";
-import { getEntitlements } from "@/lib/entitlements";
+import { getSystemDesignEntries, getSystemDesignEntry } from "@/lib/content";
 import { Markdown } from "@/components/design-system/markdown";
-import { PremiumBadge } from "@/components/design-system/premium-badge";
-import { ContentPaywall } from "@/components/paywall/content-paywall";
 import { ExplainButton } from "@/components/ai/explain-button";
 
 type Params = { slug: string };
@@ -45,17 +38,10 @@ export default async function SystemDesignEntryPage({
   params: Promise<Params>;
 }) {
   const { slug } = await params;
-  const [{ isPro }, entry] = await Promise.all([
-    getEntitlements(),
-    getSystemDesignEntry(slug),
-  ]);
+  const entry = await getSystemDesignEntry(slug);
   if (!entry) notFound();
 
-  const gated = entry.premium && !isPro;
-  const { preview, hasMore } = gated
-    ? splitPreview(entry.body)
-    : { preview: entry.body, hasMore: false };
-  const bodyToRender = gated ? preview : entry.body.replace("<!--more-->", "");
+  const body = entry.body.replace("<!--more-->", "");
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-8 lg:px-8">
@@ -72,7 +58,6 @@ export default async function SystemDesignEntryPage({
           <span className="rounded-md bg-secondary px-2 py-0.5 text-xs font-medium text-muted-foreground">
             {CATEGORY_LABEL[entry.category ?? ""] ?? "Guide"}
           </span>
-          {entry.premium && !isPro && <PremiumBadge />}
           <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
             <Clock className="size-3.5" />
             {entry.readingMinutes} min read
@@ -85,18 +70,16 @@ export default async function SystemDesignEntryPage({
         <div className="mt-4">
           <ExplainButton
             context={`System design topic: ${entry.title}. ${entry.description}`}
-            text={preview.slice(0, 4000)}
+            text={body.slice(0, 4000)}
           />
         </div>
       </header>
 
       <article className="mt-6">
-        <Markdown className="text-[0.95rem]">{bodyToRender}</Markdown>
+        <Markdown className="text-[0.95rem]">{body}</Markdown>
       </article>
 
-      {gated && hasMore && <ContentPaywall title={entry.title} />}
-
-      {!gated && entry.videos.length > 0 && (
+      {entry.videos.length > 0 && (
         <section className="mt-10 rounded-xl border border-border bg-card/40 p-5">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             Watch next

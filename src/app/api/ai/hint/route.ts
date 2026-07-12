@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getAnthropic, isAiConfigured, MODELS, textFromMessage } from "@/lib/anthropic";
-import { getEntitlements, canAccessProblem } from "@/lib/entitlements";
 
 export const maxDuration = 30;
 
@@ -16,10 +14,6 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
   if (!isAiConfigured()) {
     return NextResponse.json(
       { error: "AI features aren't configured yet. Add an Anthropic API key." },
@@ -40,16 +34,11 @@ export async function POST(req: Request) {
       statement: true,
       hints: true,
       editorial: true,
-      isPremium: true,
       complexityTime: true,
     },
   });
   if (!problem) {
     return NextResponse.json({ error: "Problem not found" }, { status: 404 });
-  }
-  const { isPro } = await getEntitlements();
-  if (!canAccessProblem(problem, isPro)) {
-    return NextResponse.json({ error: "This problem requires Pro." }, { status: 403 });
   }
 
   const priorHints = (problem.hints as string[]) ?? [];

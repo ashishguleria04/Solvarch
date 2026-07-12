@@ -1,13 +1,13 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  Bot,
   Code2,
   Network,
   Cpu,
-  Trophy,
+  Unlock,
   Sparkles,
   Terminal,
+  MessagesSquare,
   CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,22 +34,22 @@ const features = [
       "OS, DBMS, Computer Networks, and OOP — structured, diagram-rich topic pages with the questions interviewers actually ask.",
   },
   {
-    icon: Bot,
-    title: "AI Mock Interviews",
-    description:
-      "Practice DSA, system design, and behavioral rounds with a Claude-powered interviewer that probes, follows up, and scores you.",
-  },
-  {
     icon: Terminal,
     title: "Run & Submit Code",
     description:
       "Write in Python, JavaScript, Java, or C++ and run against real test cases — instant verdicts, no setup.",
   },
   {
-    icon: Trophy,
-    title: "Progress & Analytics",
+    icon: MessagesSquare,
+    title: "Interview Question Bank",
     description:
-      "Track streaks, mastered topics, and weak areas. Bookmark problems and pick up exactly where you left off.",
+      "Behavioral, HR, and technical-trivia questions with model answers and delivery tips you can actually use.",
+  },
+  {
+    icon: Unlock,
+    title: "Free & Open",
+    description:
+      "No sign-up, no paywall, no upsells. Every problem, guide, and answer is open to everyone — just pure quality content.",
   },
 ];
 
@@ -74,7 +74,7 @@ export default function LandingPage() {
             <FadeIn>
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
                 <Sparkles className="size-3.5 text-primary" />
-                AI-powered interview prep, end to end
+                Free & open interview prep — no login required
               </div>
               <h1 className="mt-6 text-balance text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
                 <span className="text-gradient">Master the</span>{" "}
@@ -82,29 +82,27 @@ export default function LandingPage() {
               </h1>
               <p className="mt-5 max-w-xl text-pretty text-lg text-muted-foreground">
                 DSA, System Design, and CS fundamentals in one sleek workspace —
-                with an integrated code editor and AI mock interviews that feel
-                like the real thing.
+                with an integrated code editor and a real judge. Open to everyone,
+                no account needed.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Button asChild variant="glow" size="lg">
-                  <Link href="/register">
-                    Start practicing free
+                  <Link href="/dsa">
+                    Start solving
                     <ArrowRight className="size-4" />
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg">
-                  <Link href="/dsa">Browse problems</Link>
+                  <Link href="/system-design">System design guides</Link>
                 </Button>
               </div>
               <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-                {["No credit card required", "150+ problems", "Free CS fundamentals"].map(
-                  (t) => (
-                    <span key={t} className="inline-flex items-center gap-1.5">
-                      <CheckCircle2 className="size-4 text-primary" />
-                      {t}
-                    </span>
-                  )
-                )}
+                {["No sign-up required", "150+ problems", "100% free"].map((t) => (
+                  <span key={t} className="inline-flex items-center gap-1.5">
+                    <CheckCircle2 className="size-4 text-primary" />
+                    {t}
+                  </span>
+                ))}
               </div>
             </FadeIn>
 
@@ -215,12 +213,11 @@ export default function LandingPage() {
                 Your next offer starts here
               </h2>
               <p className="mx-auto mt-4 max-w-md text-muted-foreground">
-                Join and start solving in under a minute. CS fundamentals and your
-                first mock interview are on us.
+                No account, no checkout — just open a problem and start solving.
               </p>
               <Button asChild variant="glow" size="lg" className="mt-8">
-                <Link href="/register">
-                  Create your free account
+                <Link href="/dsa">
+                  Start solving
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>

@@ -2,15 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Network, Layers3, Component, Clock } from "lucide-react";
 import { getSystemDesignEntries, type ContentEntry } from "@/lib/content";
-import { getEntitlements } from "@/lib/entitlements";
 import { PageHeader } from "@/components/design-system/page-header";
-import { PremiumBadge } from "@/components/design-system/premium-badge";
 import { EmptyState } from "@/components/design-system/empty-state";
 import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = { title: "System Design" };
 
-function CaseStudyCard({ entry, isPro }: { entry: ContentEntry; isPro: boolean }) {
+function CaseStudyCard({ entry }: { entry: ContentEntry }) {
   return (
     <Link href={`/system-design/${entry.slug}`} className="group">
       <Card className="h-full gap-0 p-5 transition-colors hover:border-primary/40">
@@ -18,7 +16,6 @@ function CaseStudyCard({ entry, isPro }: { entry: ContentEntry; isPro: boolean }
           <h3 className="font-semibold tracking-tight transition-colors group-hover:text-primary">
             {entry.title}
           </h3>
-          {entry.premium && !isPro && <PremiumBadge />}
         </div>
         <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">
           {entry.description}
@@ -39,7 +36,7 @@ function CaseStudyCard({ entry, isPro }: { entry: ContentEntry; isPro: boolean }
   );
 }
 
-function TopicRow({ entry, isPro }: { entry: ContentEntry; isPro: boolean }) {
+function TopicRow({ entry }: { entry: ContentEntry }) {
   return (
     <Link
       href={`/system-design/${entry.slug}`}
@@ -52,7 +49,6 @@ function TopicRow({ entry, isPro }: { entry: ContentEntry; isPro: boolean }) {
         <p className="truncate text-xs text-muted-foreground">{entry.description}</p>
       </div>
       <div className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
-        {entry.premium && !isPro && <PremiumBadge />}
         <span>{entry.readingMinutes} min</span>
       </div>
     </Link>
@@ -60,10 +56,7 @@ function TopicRow({ entry, isPro }: { entry: ContentEntry; isPro: boolean }) {
 }
 
 export default async function SystemDesignPage() {
-  const [{ isPro }, entries] = await Promise.all([
-    getEntitlements(),
-    getSystemDesignEntries(),
-  ]);
+  const entries = await getSystemDesignEntries();
 
   const caseStudies = entries.filter((e) => e.category === "case-study");
   const hld = entries.filter((e) => e.category === "hld");
@@ -98,7 +91,7 @@ export default async function SystemDesignPage() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {caseStudies.map((e) => (
-              <CaseStudyCard key={e.slug} entry={e} isPro={isPro} />
+              <CaseStudyCard key={e.slug} entry={e} />
             ))}
           </div>
         </section>
@@ -115,7 +108,7 @@ export default async function SystemDesignPage() {
             </div>
             <div className="rounded-xl border border-border bg-card/40 p-2">
               {hld.map((e) => (
-                <TopicRow key={e.slug} entry={e} isPro={isPro} />
+                <TopicRow key={e.slug} entry={e} />
               ))}
             </div>
           </section>
@@ -130,7 +123,7 @@ export default async function SystemDesignPage() {
             </div>
             <div className="rounded-xl border border-border bg-card/40 p-2">
               {lld.map((e) => (
-                <TopicRow key={e.slug} entry={e} isPro={isPro} />
+                <TopicRow key={e.slug} entry={e} />
               ))}
             </div>
           </section>

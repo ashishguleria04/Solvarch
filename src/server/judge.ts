@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { runCode, runTestCase, type TestOutcome } from "@/lib/execution";
 import type { SubmissionStatus } from "@prisma/client";
-import { recordActivity } from "@/server/stats";
 
 /** Cap on how many test cases we execute per submit (rate-limit friendly). */
 const MAX_SUBMIT_TESTS = 20;
@@ -67,15 +66,13 @@ export async function runSamples(params: {
   };
 }
 
-/** Run all tests, persist Submission + Progress + activity. */
+/** Run the full (capped) test suite and return a verdict. No persistence. */
 export async function submitSolution(params: {
-  userId: string;
-  problemId: string;
   slug: string;
   language: string;
   code: string;
 }): Promise<SubmitResult> {
-  const { userId, problemId, slug, language, code } = params;
+  const { slug, language, code } = params;
 
   const testCases = await prisma.testCase.findMany({
     where: { problem: { slug } },
@@ -119,39 +116,6 @@ export async function submitSolution(params: {
   const passed = outcomes.filter((o) => o.passed).length;
   const total = outcomes.length;
   const runtimeMs = outcomes.length ? Math.round(totalTime / outcomes.length) : null;
-
-  // Infra error: don't record a misleading verdict.
-  if (status === "PENDING") {
-    return { status, passed, total, runtimeMs, firstFailure, message };
-  }
-
-  await prisma.submission.create({
-    data: {
-      userId,
-      problemId,
-      language,
-      code,
-      status,
-      runtimeMs,
-      passedCount: passed,
-      totalCount: total,
-      stderr: firstFailure?.stderr || null,
-    },
-  });
-
-  const solved = status === "ACCEPTED";
-  const existing = await prisma.progress.findUnique({
-    where: { userId_problemId: { userId, problemId } },
-  });
-  // Never downgrade a SOLVED problem back to ATTEMPTED.
-  const nextStatus = solved || existing?.status === "SOLVED" ? "SOLVED" : "ATTEMPTED";
-  await prisma.progress.upsert({
-    where: { userId_problemId: { userId, problemId } },
-    create: { userId, problemId, status: nextStatus },
-    update: { status: nextStatus },
-  });
-
-  await recordActivity(userId);
 
   return { status, passed, total, runtimeMs, firstFailure, message };
 }
