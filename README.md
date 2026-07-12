@@ -1,28 +1,22 @@
 # Solvarch
 
-A full-stack technical interview preparation platform. Solve curated DSA problems in an in-browser code editor, get judged against real test cases, and use AI to make hard concepts click.
+A free, open technical-interview prep platform. Solve curated DSA problems in an in-browser code editor, get judged against real test cases, study system design and CS fundamentals, and use AI to make hard concepts click. **No sign-up, no paywall — everything is open to everyone.**
 
 ## Features
 
 **DSA practice** — 150 hand-authored problems across 15 topics (Arrays through Bit Manipulation), each with a markdown statement, constraints, worked examples, progressive hints, an editorial, alternative approaches with complexity analysis, and a linked video.
 
-**In-browser judge** — a Monaco-based editor with starter code in Python, JavaScript, Java, and C++. Submissions run against hidden test cases through a pluggable execution backend (Paiza by default; Piston or Judge0 via config) and are verdict-graded: Accepted, Wrong Answer, TLE, Runtime Error, or Compile Error.
+**In-browser judge** — a Monaco-based editor with starter code in Python, JavaScript, Java, and C++ (all languages open to everyone). Run against the sample tests, or submit to run the full hidden suite through a pluggable execution backend (Paiza by default; Piston or Judge0 via config) and get a verdict: Accepted, Wrong Answer, TLE, Runtime Error, or Compile Error.
 
 **Trustworthy test data** — every problem ships with a reference solution in the seed. Expected outputs are *computed at seed time* by running the reference against each test input, so tests and solutions can never drift apart.
 
-**AI assist** — "explain this simpler" and "explain with an analogy" powered by Claude, available on any statement or editorial.
-
-**Progress tracking** — per-problem solved/attempted status, bookmarks, submission history, and daily activity for streaks.
+**AI assist** — "explain this simpler" and "explain with an analogy" plus progressive AI hints, powered by Claude, available on any statement, editorial, or concept page. Optional: activates when an Anthropic API key is set.
 
 **Interview question bank** — behavioral, HR, and technical trivia questions with model answers and delivery tips.
 
-**System Design** — 20 case studies and concept guides (HLD + LLD, from load balancing to "design Netflix"), authored as markdown with frontmatter and rendered with Mermaid diagrams.
+**System Design** — case studies and concept guides (HLD + LLD, from load balancing to "design Netflix"), authored as markdown with frontmatter and rendered with Mermaid diagrams.
 
 **CS Fundamentals** — OS, DBMS, Networks, and OOP modules with per-topic deep dives.
-
-**AI mock interviews** — live chat interviews (behavioral, HR, or technical) with Claude as the interviewer, streamed replies, and a structured feedback report at the end. Free tier gets one per month.
-
-**Accounts & monetization** — Auth.js v5 (email/password + Google OAuth), free/pro tiers with per-problem premium gating (roughly the first 20% of each topic is free), and Stripe subscriptions with checkout, billing portal, and webhook sync.
 
 ## Tech stack
 
@@ -31,11 +25,11 @@ A full-stack technical interview preparation platform. Solve curated DSA problem
 | Framework | Next.js 16 (App Router) · React 19 · TypeScript |
 | Styling | Tailwind CSS v4 · Radix UI · Framer Motion |
 | Database | PostgreSQL (Neon) via Prisma 6 |
-| Auth | Auth.js (NextAuth v5) with Prisma adapter |
 | Editor | Monaco (`@monaco-editor/react`) |
 | Code execution | Paiza.IO / Piston / Judge0 (env-selectable) |
-| AI | Anthropic Claude (`@anthropic-ai/sdk`) |
-| Payments | Stripe |
+| AI (optional) | Anthropic Claude (`@anthropic-ai/sdk`) |
+
+There is no authentication and no billing — the app is fully accessible with nothing but a database for the problem and question-bank content.
 
 ## Getting started
 
@@ -45,8 +39,7 @@ Requires Node.js 20+ and a Postgres database (a free [Neon](https://neon.tech) i
 # 1. Install
 npm install
 
-# 2. Configure — copy the template and fill in at minimum
-#    DATABASE_URL and AUTH_SECRET (npx auth secret)
+# 2. Configure — copy the template and set DATABASE_URL
 cp .env.example .env
 
 # 3. Create the schema and seed 150 problems + the question bank
@@ -57,7 +50,7 @@ npm run db:seed
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Code execution works out of the box (Paiza's guest tier needs no key); AI features activate once `ANTHROPIC_API_KEY` is set, and billing once the Stripe keys are set. See [.env.example](.env.example) for every option.
+Open [http://localhost:3000](http://localhost:3000). Code execution works out of the box (Paiza's guest tier needs no key); AI assist activates once `ANTHROPIC_API_KEY` is set. See [.env.example](.env.example) for every option.
 
 ## Scripts
 
@@ -76,28 +69,25 @@ Open [http://localhost:3000](http://localhost:3000). Code execution works out of
 
 ```text
 prisma/
-  schema.prisma        # Users, subscriptions, topics, problems, test cases,
-                       # submissions, progress, interviews, question bank
+  schema.prisma        # Topics, problems, test cases, question bank
   seed/
     topics.ts          # The 15-topic DSA taxonomy
     problems/          # One file per topic; each problem includes a
                        # reference solution that generates expected outputs
     questions.ts       # Behavioral / HR / trivia question bank
+content/               # System Design + CS Fundamentals markdown
 src/
   app/
     (marketing)/       # Landing page
-    (auth)/            # Login & registration
-    (app)/             # Dashboard and the DSA problem workspace
-    api/               # execute, submit, bookmark, auth, ai/explain
+    (app)/             # DSA workspace, System Design, CS, Question Bank
+    api/               # execute, submit, ai/explain, ai/hint
   components/          # UI, editor workspace, problem views, design system
   lib/
     execution/         # Provider abstraction: paiza | piston | judge0
     anthropic.ts       # Claude client + model selection
-    auth.ts            # Auth.js configuration
-    entitlements.ts    # Free vs. Pro gating
-  server/              # Data access: problems, judging, user stats
+  server/              # Data access: problems, judging, question bank
 ```
 
 ## How judging works
 
-Problems are stdin → stdout. When a solution is submitted, the API runs it once per test case on the configured execution provider, normalizes output (trailing whitespace and newlines are ignored), and compares against the expected output that was generated by the reference solution at seed time. Sample tests are shown to the user; the rest stay hidden.
+Problems are stdin → stdout. When code is run or submitted, the API executes it once per test case on the configured execution provider, normalizes output (trailing whitespace and newlines are ignored), and compares against the expected output that was generated by the reference solution at seed time. Sample tests are shown to the user; the rest stay hidden. Results are returned live and are not stored — there are no accounts.
