@@ -28,18 +28,6 @@ export type ContentEntry = {
 
 const CONTENT_ROOT = path.join(process.cwd(), "content");
 
-/** Split a premium body into a free preview and the gated remainder. */
-export function splitPreview(body: string): { preview: string; hasMore: boolean } {
-  const marker = body.indexOf("<!--more-->");
-  if (marker !== -1) {
-    return { preview: body.slice(0, marker).trim(), hasMore: true };
-  }
-  // Fallback: first 3 paragraphs.
-  const paras = body.split(/\n\n+/);
-  if (paras.length <= 3) return { preview: body, hasMore: false };
-  return { preview: paras.slice(0, 3).join("\n\n"), hasMore: true };
-}
-
 function parseFile(dir: string, filename: string): ContentEntry {
   const raw = fs.readFileSync(path.join(dir, filename), "utf8");
   const { data, content } = matter(raw);
