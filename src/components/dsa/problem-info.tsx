@@ -1,8 +1,7 @@
 import { Video, Clock, Database } from "lucide-react";
-import type { Difficulty } from "@prisma/client";
+import type { Difficulty } from "@/data/dsa";
 import { DifficultyBadge } from "@/components/design-system/difficulty-badge";
 import { Markdown } from "@/components/design-system/markdown";
-import { ExplainButton } from "@/components/ai/explain-button";
 import {
   Accordion,
   AccordionContent,
@@ -115,13 +114,11 @@ export function ProblemEditorial({
   approaches,
   complexityTime,
   complexitySpace,
-  title,
 }: {
   editorial?: string | null;
   approaches?: Approach[] | null;
   complexityTime?: string | null;
   complexitySpace?: string | null;
-  title: string;
 }) {
   if (!editorial && (!approaches || approaches.length === 0)) {
     return (
@@ -150,16 +147,7 @@ export function ProblemEditorial({
         </div>
       )}
 
-      {editorial && (
-        <div>
-          <Markdown>{editorial}</Markdown>
-          <ExplainButton
-            text={editorial}
-            context={`the editorial for "${title}"`}
-            className="mt-3"
-          />
-        </div>
-      )}
+      {editorial && <Markdown>{editorial}</Markdown>}
 
       {approaches && approaches.length > 0 && (
         <div className="mt-6">

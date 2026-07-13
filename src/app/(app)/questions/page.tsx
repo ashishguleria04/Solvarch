@@ -1,42 +1,26 @@
 import type { Metadata } from "next";
-import { MessagesSquare } from "lucide-react";
-import { getQuestionBank } from "@/server/questions";
+import { questions } from "@/data/questions";
 import { PageHeader } from "@/components/design-system/page-header";
-import { EmptyState } from "@/components/design-system/empty-state";
 import { QuestionBank } from "@/components/questions/question-bank";
 
 export const metadata: Metadata = { title: "Question Bank" };
 
-// Reads the question bank from the database at request time, so it must never
-// be prerendered at build (the build worker has no DB access).
-export const dynamic = "force-dynamic";
-
-export default async function QuestionsPage() {
-  const items = await getQuestionBank();
-
+export default function QuestionsPage() {
   return (
     <div className="space-y-6 p-6 lg:p-8">
       <PageHeader
         title="Question Bank"
         description="Behavioral, HR, and technical trivia questions with model answers and delivery tips."
       />
-      {items.length === 0 ? (
-        <EmptyState
-          icon={MessagesSquare}
-          title="The question bank is being stocked"
-          description="Run the database seed to load the interview questions."
-        />
-      ) : (
-        <QuestionBank
-          items={items.map((q) => ({
-            id: q.id,
-            category: q.category,
-            question: q.question,
-            modelAnswer: q.modelAnswer,
-            tips: q.tips,
-          }))}
-        />
-      )}
+      <QuestionBank
+        items={questions.map((q, i) => ({
+          id: `q-${i}`,
+          category: q.category,
+          question: q.question,
+          modelAnswer: q.modelAnswer,
+          tips: q.tips ?? null,
+        }))}
+      />
     </div>
   );
 }

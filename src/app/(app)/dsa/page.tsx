@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
 import { Code2 } from "lucide-react";
-import type { Difficulty } from "@prisma/client";
-import { getProblems, getDsaTopics } from "@/server/dsa";
+import { filterProblems, topics, type Difficulty } from "@/data/dsa";
 import { PageHeader } from "@/components/design-system/page-header";
 import { EmptyState } from "@/components/design-system/empty-state";
 import { ProblemFilters } from "@/components/dsa/problem-filters";
 import { ProblemList } from "@/components/dsa/problem-list";
 
 export const metadata: Metadata = { title: "DSA Problems" };
-
-// DB-backed (problems + topics); render per request, never prerender at build.
-export const dynamic = "force-dynamic";
 
 type SearchParams = {
   topic?: string;
@@ -29,10 +25,11 @@ export default async function DsaPage({
     ? (sp.difficulty as Difficulty)
     : undefined;
 
-  const [topics, problems] = await Promise.all([
-    getDsaTopics(),
-    getProblems({ topicSlug: sp.topic, difficulty, search: sp.q }),
-  ]);
+  const problems = filterProblems({
+    topicSlug: sp.topic,
+    difficulty,
+    search: sp.q,
+  });
 
   return (
     <div className="space-y-6 p-6 lg:p-8">

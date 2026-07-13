@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { executeSchema } from "@/lib/validations/dsa";
-import { runSamples } from "@/server/judge";
+import { runSamples } from "@/lib/judge";
 
 export async function POST(req: Request) {
   const parsed = executeSchema.safeParse(await req.json().catch(() => null));

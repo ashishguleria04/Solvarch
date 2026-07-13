@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Difficulty } from "@prisma/client";
+import type { Difficulty } from "@/data/dsa";
 import { DifficultyBadge } from "@/components/design-system/difficulty-badge";
 
 type ProblemRow = {
