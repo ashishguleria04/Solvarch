@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, PlayCircle } from "lucide-react";
 import { getSystemDesignEntries, getSystemDesignEntry } from "@/lib/content";
 import { Markdown } from "@/components/design-system/markdown";
-import { ExplainButton } from "@/components/ai/explain-button";
 
 type Params = { slug: string };
 
@@ -67,12 +66,6 @@ export default async function SystemDesignEntryPage({
           {entry.title}
         </h1>
         <p className="mt-2 text-muted-foreground">{entry.description}</p>
-        <div className="mt-4">
-          <ExplainButton
-            context={`System design topic: ${entry.title}. ${entry.description}`}
-            text={body.slice(0, 4000)}
-          />
-        </div>
       </header>
 
       <article className="mt-6">
