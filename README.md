@@ -1,16 +1,14 @@
 # Solvarch
 
-A free, open technical-interview prep platform. Solve curated DSA problems in an in-browser code editor, get judged against real test cases, study system design and CS fundamentals, and use AI to make hard concepts click. **No sign-up, no paywall — everything is open to everyone.**
+A free, open technical-interview prep platform. Solve curated DSA problems in an in-browser code editor, get judged against real test cases, and study system design and CS fundamentals. **No sign-up, no paywall, no database — clone, install, run.**
 
 ## Features
 
 **DSA practice** — 150 hand-authored problems across 15 topics (Arrays through Bit Manipulation), each with a markdown statement, constraints, worked examples, progressive hints, an editorial, alternative approaches with complexity analysis, and a linked video.
 
-**In-browser judge** — a Monaco-based editor with starter code in Python, JavaScript, Java, and C++ (all languages open to everyone). Run against the sample tests, or submit to run the full hidden suite through a pluggable execution backend (Paiza by default; Piston or Judge0 via config) and get a verdict: Accepted, Wrong Answer, TLE, Runtime Error, or Compile Error.
+**In-browser judge** — a Monaco-based editor with starter code in Python, JavaScript, Java, and C++. Run against the sample tests, or submit to run the full hidden suite through a pluggable execution backend (Paiza by default; Piston or Judge0 via config) and get a verdict: Accepted, Wrong Answer, TLE, Runtime Error, or Compile Error.
 
-**Trustworthy test data** — every problem ships with a reference solution in the seed. Expected outputs are *computed at seed time* by running the reference against each test input, so tests and solutions can never drift apart.
-
-**AI assist** — "explain this simpler" and "explain with an analogy" plus progressive AI hints, powered by Claude, available on any statement, editorial, or concept page. Optional: activates when an Anthropic API key is set.
+**Trustworthy test data** — every problem ships with a reference solution. Expected outputs are *computed from the reference* over each test input when the catalog loads, so tests and solutions can never drift apart.
 
 **Interview question bank** — behavioral, HR, and technical trivia questions with model answers and delivery tips.
 
@@ -24,33 +22,22 @@ A free, open technical-interview prep platform. Solve curated DSA problems in an
 | --- | --- |
 | Framework | Next.js 16 (App Router) · React 19 · TypeScript |
 | Styling | Tailwind CSS v4 · Radix UI · Framer Motion |
-| Database | PostgreSQL (Neon) via Prisma 6 |
+| Content | Static TypeScript (`src/data/`) + markdown (`content/`) — no database |
 | Editor | Monaco (`@monaco-editor/react`) |
 | Code execution | Paiza.IO / Piston / Judge0 (env-selectable) |
-| AI (optional) | Anthropic Claude (`@anthropic-ai/sdk`) |
 
-There is no authentication and no billing — the app is fully accessible with nothing but a database for the problem and question-bank content.
+There is no authentication, no billing, and no database — all content is checked into the repo and pages are statically rendered.
 
 ## Getting started
 
-Requires Node.js 20+ and a Postgres database (a free [Neon](https://neon.tech) instance works).
+Requires Node.js 20+. Nothing else.
 
 ```bash
-# 1. Install
 npm install
-
-# 2. Configure — copy the template and set DATABASE_URL
-cp .env.example .env
-
-# 3. Create the schema and seed 150 problems + the question bank
-npm run db:push
-npm run db:seed
-
-# 4. Run
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Code execution works out of the box (Paiza's guest tier needs no key); AI assist activates once `ANTHROPIC_API_KEY` is set. See [.env.example](.env.example) for every option.
+Open [http://localhost:3000](http://localhost:3000). Code execution works out of the box (Paiza's guest tier needs no key). See [.env.example](.env.example) for the optional execution-provider overrides.
 
 ## Scripts
 
@@ -59,35 +46,28 @@ Open [http://localhost:3000](http://localhost:3000). Code execution works out of
 | `npm run dev` | Start the dev server |
 | `npm run build` / `start` | Production build / serve |
 | `npm run lint` | ESLint |
-| `npm run db:push` | Push the Prisma schema to the database |
-| `npm run db:seed` | Seed topics, problems, test cases, and the question bank (idempotent) |
-| `npm run db:migrate` | Create/apply a dev migration |
-| `npm run db:studio` | Browse the database in Prisma Studio |
-| `npm run db:reset` | Drop, re-migrate, and re-seed |
 
 ## Project structure
 
 ```text
-prisma/
-  schema.prisma        # Topics, problems, test cases, question bank
-  seed/
+content/               # System Design + CS Fundamentals markdown
+src/
+  data/
     topics.ts          # The 15-topic DSA taxonomy
     problems/          # One file per topic; each problem includes a
                        # reference solution that generates expected outputs
     questions.ts       # Behavioral / HR / trivia question bank
-content/               # System Design + CS Fundamentals markdown
-src/
+    dsa.ts             # Assembled catalog: topics, problems, test cases
   app/
     (marketing)/       # Landing page
     (app)/             # DSA workspace, System Design, CS, Question Bank
-    api/               # execute, submit, ai/explain, ai/hint
+    api/               # execute, submit
   components/          # UI, editor workspace, problem views, design system
   lib/
     execution/         # Provider abstraction: paiza | piston | judge0
-    anthropic.ts       # Claude client + model selection
-  server/              # Data access: problems, judging, question bank
+    judge.ts           # Runs test suites and maps outcomes to verdicts
 ```
 
 ## How judging works
 
-Problems are stdin → stdout. When code is run or submitted, the API executes it once per test case on the configured execution provider, normalizes output (trailing whitespace and newlines are ignored), and compares against the expected output that was generated by the reference solution at seed time. Sample tests are shown to the user; the rest stay hidden. Results are returned live and are not stored — there are no accounts.
+Problems are stdin → stdout. When code is run or submitted, the API executes it once per test case on the configured execution provider, normalizes output (trailing whitespace and newlines are ignored), and compares against the expected output generated by the reference solution. Sample tests are shown to the user; the rest stay hidden. Results are returned live and are not stored — there are no accounts.
