@@ -451,4 +451,68 @@ export const backtracking: SeedProblem[] = [
       { input: "8" },
     ],
   },
+
+  {
+    slug: "subsets-ii",
+    title: "Subsets II",
+    difficulty: "MEDIUM",
+    statement: `Given an array of integers **that may contain duplicates**, return all possible subsets — without any duplicate subsets in the output.
+
+**Input**: one line of space-separated integers.
+**Output**: one subset per line, elements in ascending order (the empty subset prints as an empty line). Subsets may be produced in any order — the template prints them canonically.`,
+    constraints: `- 1 ≤ nums.length ≤ 10
+- -10 ≤ values ≤ 10 (duplicates allowed)`,
+    examples: [
+      { input: "1 2 2", output: "\n1\n1 2\n1 2 2\n2\n2 2" },
+      { input: "0", output: "\n0" },
+    ],
+    hints: [
+      "Sort first so duplicates sit together.",
+      "Generating all subsets then deduping with a set works — but the elegant fix prunes duplicates before they're born.",
+      "At each recursion level, skip a value equal to the one just tried at the same level: if j > i and nums[j] == nums[j−1], continue.",
+    ],
+    editorial: `Sort, then run the standard subsets DFS with one added guard: within a single level of the recursion (the for-loop over candidate positions), never *start* a branch with a value you already started one with — \`j > i && nums[j] === nums[j−1] → skip\`. Choosing the second '2' at a level where the first '2' was already explored would rebuild the identical subtree of subsets. Note the condition is about *the same level*, not adjacent picks — taking consecutive equal values deeper in one branch (to form [2 2]) remains legal. O(n · 2ⁿ) worst case, and the same skip-guard powers Combination Sum II and Permutations II — it's the canonical dedup idiom for backtracking.`,
+    approaches: [
+      {
+        name: "Sort + same-level skip",
+        complexityTime: "O(n · 2ⁿ)",
+        complexitySpace: "O(n) recursion",
+        body: "The standard include/exclude walk; equal values may only start one branch per level.",
+      },
+      {
+        name: "Generate + set dedup",
+        complexityTime: "O(n · 2ⁿ)",
+        complexitySpace: "O(2ⁿ)",
+        body: "Serialize each subset into a set — correct but wasteful; mention, don't submit.",
+      },
+    ],
+    complexityTime: "O(n · 2ⁿ)",
+    complexitySpace: "O(n)",
+    youtubeUrl: yt("neetcode subsets ii backtracking"),
+    tags: ["backtracking", "recursion", "sorting"],
+    starterCode: buildStarter("intArray", "sortedIntMatrix", "subsetsWithDup"),
+    reference: (input) => {
+      const nums = first(input).sort((a, b) => a - b);
+      const rows: number[][] = [];
+      const path: number[] = [];
+      const dfs = (i: number) => {
+        rows.push([...path]);
+        for (let j = i; j < nums.length; j++) {
+          if (j > i && nums[j] === nums[j - 1]) continue;
+          path.push(nums[j]);
+          dfs(j + 1);
+          path.pop();
+        }
+      };
+      dfs(0);
+      return sortedMatOut(rows);
+    },
+    tests: [
+      { input: "1 2 2", sample: true },
+      { input: "0", sample: true },
+      { input: "4 4 4 1 4" },
+      { input: "-1 -1 0" },
+      { input: "5 5" },
+    ],
+  },
 ];

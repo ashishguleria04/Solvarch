@@ -479,4 +479,70 @@ export const heaps: SeedProblem[] = [
       { input: "4\n1\n\n2\n1 1" },
     ],
   },
+
+  {
+    slug: "kth-smallest-element-in-a-sorted-matrix",
+    title: "Kth Smallest Element in a Sorted Matrix",
+    difficulty: "MEDIUM",
+    statement: `Each row and each column of an n×n matrix is sorted ascending. Return the k-th smallest element **in sorted order** (not the k-th distinct value).
+
+**Input**
+- Line 1: \`n n\` — the matrix dimensions
+- Next n lines: the matrix rows
+- Last line: the integer \`k\`
+
+**Output**: the k-th smallest element.`,
+    constraints: `- 1 ≤ n ≤ 300
+- -10^9 ≤ values ≤ 10^9
+- 1 ≤ k ≤ n²`,
+    examples: [
+      {
+        input: "3 3\n1 5 9\n10 11 13\n12 13 15\n8",
+        output: "13",
+        explanation: "Sorted: 1 5 9 10 11 12 13 13 15 — the 8th is 13.",
+      },
+      { input: "1 1\n-5\n1", output: "-5" },
+    ],
+    hints: [
+      "A min-heap seeded with each row's head pops the global smallest k times — merge k sorted lists in disguise.",
+      "Only push a popped cell's right neighbor; column starts are already seeded.",
+      "The O(n log(range)) alternative: binary search the value space, counting cells ≤ mid via a staircase walk.",
+    ],
+    editorial: `Two respectable answers. **Heap**: treat each row as a sorted list and k-way merge — seed the heap with column 0 of every row (capped at k rows), then pop/push-right-neighbor k times: O(k log n). **Binary search on the value** is the elegant one: for a candidate v, count elements ≤ v in O(n) by walking the staircase from the bottom-left corner (step up when the cell exceeds v, right otherwise); binary search the smallest v whose count reaches k over the number range: O(n log(max−min)), constant space. The staircase count exploits both sort orders at once — the property the problem gives you specifically so you'll use it.`,
+    approaches: [
+      {
+        name: "Min-heap k-way merge",
+        complexityTime: "O(k log n)",
+        complexitySpace: "O(n)",
+        body: "Seed row heads; pop the min, push its right neighbor, k times.",
+      },
+      {
+        name: "Binary search + staircase count",
+        complexityTime: "O(n log range)",
+        complexitySpace: "O(1)",
+        body: "Count cells ≤ mid from the bottom-left corner; search the value space.",
+      },
+    ],
+    complexityTime: "O(n log range)",
+    complexitySpace: "O(n)",
+    youtubeUrl: yt("kth smallest element sorted matrix leetcode"),
+    tags: ["heap", "binary-search", "matrix"],
+    starterCode: buildStarter("matrixK", "int", "kthSmallest"),
+    reference: (input) => {
+      const ls = lines(input);
+      const [r] = ints(ls[0]);
+      const all: number[] = [];
+      for (let i = 0; i < r; i++) all.push(...ints(ls[1 + i]));
+      const k = ints(ls[1 + r])[0];
+      all.sort((a, b) => a - b);
+      return String(all[k - 1]);
+    },
+    tests: [
+      { input: "3 3\n1 5 9\n10 11 13\n12 13 15\n8", sample: true },
+      { input: "1 1\n-5\n1", sample: true },
+      { input: "2 2\n1 2\n1 3\n2" },
+      { input: "2 2\n-5 -4\n-5 -4\n4" },
+      { input: "3 3\n1 3 5\n6 7 12\n11 14 14\n6" },
+    ],
+  },
 ];

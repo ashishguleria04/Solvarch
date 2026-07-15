@@ -725,4 +725,86 @@ export const graphs: SeedProblem[] = [
       { input: "5 6\n0 1 5\n1 2 5\n0 3 2\n3 1 2\n1 4 1\n4 2 1\n0 2 2" },
     ],
   },
+
+  {
+    slug: "min-cost-to-connect-all-points",
+    title: "Min Cost to Connect All Points",
+    difficulty: "MEDIUM",
+    statement: `You are given points on a 2D plane. The cost to connect two points is their **Manhattan distance** |x₁−x₂| + |y₁−y₂|. Return the minimum total cost to make all points connected (directly or indirectly) — i.e., the weight of a minimum spanning tree.
+
+**Input**
+- Line 1: \`n 2\` — the number of points and the coordinate count
+- Next n lines: \`x y\` for each point
+
+**Output**: the minimum total cost.`,
+    constraints: `- 1 ≤ n ≤ 1000
+- -10^6 ≤ coordinates ≤ 10^6
+- All points distinct.`,
+    examples: [
+      {
+        input: "5 2\n0 0\n2 2\n3 10\n5 2\n7 0",
+        output: "20",
+        explanation: "Edges (0,0)-(2,2), (2,2)-(5,2), (5,2)-(7,0), (2,2)-(3,10) cost 4+3+4+9.",
+      },
+      { input: "3 2\n3 12\n-2 5\n-4 1", output: "18" },
+    ],
+    hints: [
+      "Connecting everything at minimum cost with no cycles worth paying for = minimum spanning tree.",
+      "The graph is complete (n² edges) — Kruskal must sort them all; Prim without a heap is O(n²) and needs no edge list at all.",
+      "Prim on dense graphs: keep dist[v] = cheapest link from the growing tree to v; each round, absorb the closest outsider and relax.",
+    ],
+    editorial: `The graph is *complete* — every pair of points is an edge — which flips the usual advice: Kruskal pays O(n² log n) to sort half a million edges, while **array-based Prim** runs O(n²) with O(n) memory and never materializes an edge list. Maintain \`dist[v]\`: the cheapest Manhattan edge from the current tree to each outside point. Each of n rounds picks the closest outsider, adds its distance to the total, and relaxes every remaining point against the newcomer. For n = 1000 that's a million distance computations — instant. The interview lesson: heap-Prim (O(E log V)) is for sparse graphs; on dense ones the humble O(n²) scan wins. Union-Find Kruskal remains the right call the moment edges are given explicitly and sparsely.`,
+    approaches: [
+      {
+        name: "Prim, O(n²) array version",
+        complexityTime: "O(n²)",
+        complexitySpace: "O(n)",
+        body: "dist[] relaxation against each absorbed point; no edge list, no heap.",
+      },
+      {
+        name: "Kruskal + Union-Find",
+        complexityTime: "O(n² log n)",
+        complexitySpace: "O(n²)",
+        body: "Generate all pair edges, sort, union until n−1 accepted. Fine, but dominated here.",
+      },
+    ],
+    complexityTime: "O(n²)",
+    complexitySpace: "O(n)",
+    youtubeUrl: yt("neetcode min cost to connect all points"),
+    tags: ["graph", "minimum-spanning-tree", "prim"],
+    starterCode: buildStarter("matrix", "int", "minCostConnectPoints"),
+    reference: (input) => {
+      const ls = lines(input);
+      const [n] = ints(ls[0]);
+      const pts: number[][] = [];
+      for (let i = 0; i < n; i++) pts.push(ints(ls[1 + i]));
+      const dist = new Array(n).fill(Infinity);
+      const used = new Array(n).fill(false);
+      dist[0] = 0;
+      let total = 0;
+      for (let round = 0; round < n; round++) {
+        let u = -1;
+        for (let v = 0; v < n; v++) {
+          if (!used[v] && (u === -1 || dist[v] < dist[u])) u = v;
+        }
+        used[u] = true;
+        total += dist[u];
+        for (let v = 0; v < n; v++) {
+          if (!used[v]) {
+            const d =
+              Math.abs(pts[u][0] - pts[v][0]) + Math.abs(pts[u][1] - pts[v][1]);
+            if (d < dist[v]) dist[v] = d;
+          }
+        }
+      }
+      return String(total);
+    },
+    tests: [
+      { input: "5 2\n0 0\n2 2\n3 10\n5 2\n7 0", sample: true },
+      { input: "3 2\n3 12\n-2 5\n-4 1", sample: true },
+      { input: "1 2\n0 0" },
+      { input: "2 2\n-1000000 -1000000\n1000000 1000000" },
+      { input: "4 2\n0 0\n0 1\n1 0\n1 1" },
+    ],
+  },
 ];

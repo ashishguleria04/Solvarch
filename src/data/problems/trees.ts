@@ -568,4 +568,74 @@ export const trees: SeedProblem[] = [
       { input: "5 4 8 11 null 13 4 7 2 null null null 1" },
     ],
   },
+
+  {
+    slug: "subtree-of-another-tree",
+    title: "Subtree of Another Tree",
+    difficulty: "EASY",
+    statement: `Given the roots of trees \`root\` and \`subRoot\`, return \`true\` if some node of \`root\` (together with all its descendants) is structurally identical to \`subRoot\`, with equal values.
+
+**Input**
+- Line 1: level-order tokens for \`root\` (\`null\` = missing child)
+- Line 2: level-order tokens for \`subRoot\`
+
+**Output**: \`true\` or \`false\`.`,
+    constraints: `- 1 ≤ root nodes ≤ 2000, 1 ≤ subRoot nodes ≤ 1000
+- -10^4 ≤ values ≤ 10^4`,
+    examples: [
+      { input: "3 4 5 1 2\n4 1 2", output: "true" },
+      {
+        input: "3 4 5 1 2 null null null null 0\n4 1 2",
+        output: "false",
+        explanation: "The candidate subtree at 4 has an extra node 0 under 2.",
+      },
+    ],
+    hints: [
+      "Two-layer recursion: 'is same tree' as a helper, tried at every node.",
+      "sameTree(a, b): both null → true; one null or values differ → false; recurse both sides.",
+      "A subtree match must include ALL descendants — matching a prefix isn't enough.",
+    ],
+    editorial: `Compose two classic recursions: \`sameTree(a, b)\` checks structural equality, and the outer walk tries it at every node of root, recursing into children on failure. Worst case O(m·n) (every node starts a comparison that runs deep), but real inputs exit comparisons at the first mismatch. The 'all descendants' requirement is what the second example tests — node 4's subtree contains an extra leaf, so a shape-prefix match must be rejected; that's precisely why sameTree demands both children null-match. The O(m+n) upgrade — serialize both trees with null markers and run a substring search — is a great follow-up to mention.`,
+    approaches: [
+      {
+        name: "Nested recursion",
+        complexityTime: "O(m·n) worst",
+        complexitySpace: "O(h)",
+        body: "Try sameTree at every node of the host tree.",
+      },
+      {
+        name: "Serialize + substring",
+        complexityTime: "O(m + n)",
+        complexitySpace: "O(m + n)",
+        body: "Preorder-serialize with null sentinels; check containment (KMP).",
+      },
+    ],
+    complexityTime: "O(m·n)",
+    complexitySpace: "O(h)",
+    youtubeUrl: yt("neetcode subtree of another tree"),
+    tags: ["tree", "recursion", "dfs"],
+    starterCode: buildStarter("twoTrees", "bool", "isSubtree"),
+    reference: (input) => {
+      const root = parseTree(lines(input)[0]);
+      const sub = parseTree(lines(input)[1]);
+      const same = (a: TNode | null, b: TNode | null): boolean => {
+        if (!a && !b) return true;
+        if (!a || !b || a.val !== b.val) return false;
+        return same(a.left, b.left) && same(a.right, b.right);
+      };
+      const dfs = (node: TNode | null): boolean => {
+        if (!node) return false;
+        return same(node, sub) || dfs(node.left) || dfs(node.right);
+      };
+      return boolOut(dfs(root));
+    },
+    tests: [
+      { input: "3 4 5 1 2\n4 1 2", sample: true },
+      { input: "3 4 5 1 2 null null null null 0\n4 1 2", sample: true },
+      { input: "1\n1" },
+      { input: "1 2\n2" },
+      { input: "1 2 3\n1 2" },
+      { input: "-5 null -5\n-5" },
+    ],
+  },
 ];

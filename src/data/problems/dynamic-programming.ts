@@ -714,4 +714,136 @@ export const dynamicProgramming: SeedProblem[] = [
       { input: "racecar" },
     ],
   },
+
+  {
+    slug: "longest-palindromic-subsequence",
+    title: "Longest Palindromic Subsequence",
+    difficulty: "MEDIUM",
+    statement: `Return the length of the longest **subsequence** of \`s\` that is a palindrome. A subsequence keeps relative order but need not be contiguous.
+
+**Input**: one line, the string \`s\`.
+**Output**: the length of the longest palindromic subsequence.`,
+    constraints: `- 1 ≤ s.length ≤ 1000
+- Lowercase English letters.`,
+    examples: [
+      { input: "bbbab", output: "4", explanation: "\"bbbb\"." },
+      { input: "cbbd", output: "2", explanation: "\"bb\"." },
+      { input: "agbdba", output: "5", explanation: "\"abdba\"." },
+    ],
+    hints: [
+      "Subsequence ≠ substring — 'longest palindromic substring' techniques don't transfer.",
+      "Interval DP: define dp[i][j] = LPS length within s[i..j].",
+      "If s[i] == s[j], they wrap the inside: 2 + dp[i+1][j−1]; otherwise drop one end and take the max.",
+    ],
+    editorial: `Interval DP over substring ranges: \`dp[i][j]\` is the longest palindromic subsequence inside \`s[i..j]\`. Matching endpoints contribute both characters around the inner answer (\`2 + dp[i+1][j−1]\`); mismatched endpoints mean at least one is expendable (\`max(dp[i+1][j], dp[i][j−1])\`). Fill by increasing interval length (or iterate i downward, j upward) with single characters as the base case 1. O(n²) time and space; a rolling 1-D array cuts memory. The slick alternative — LPS(s) = LCS(s, reverse(s)) — reduces it to a problem you already know, and knowing *both* framings is the flex. This DP also answers 'minimum insertions to make s a palindrome': n − LPS(s).`,
+    approaches: [
+      {
+        name: "Interval DP",
+        complexityTime: "O(n²)",
+        complexitySpace: "O(n²) → O(n) rolled",
+        body: "dp[i][j] over ranges; endpoints match → wrap, else drop an end.",
+      },
+      {
+        name: "LCS with the reverse",
+        complexityTime: "O(n²)",
+        complexitySpace: "O(n²)",
+        body: "LPS(s) = LCS(s, reverse(s)) — reuse the LCS table verbatim.",
+      },
+    ],
+    complexityTime: "O(n²)",
+    complexitySpace: "O(n²)",
+    youtubeUrl: yt("longest palindromic subsequence dp"),
+    tags: ["dynamic-programming", "string", "interval-dp"],
+    starterCode: buildStarter("string", "int", "longestPalindromeSubseq"),
+    reference: (input) => {
+      const s = (lines(input)[0] ?? "").trim();
+      const n = s.length;
+      if (n === 0) return "0";
+      const dp: number[][] = Array.from({ length: n }, () => new Array(n).fill(0));
+      for (let i = n - 1; i >= 0; i--) {
+        dp[i][i] = 1;
+        for (let j = i + 1; j < n; j++) {
+          dp[i][j] =
+            s[i] === s[j]
+              ? 2 + (j - i > 1 ? dp[i + 1][j - 1] : 0)
+              : Math.max(dp[i + 1][j], dp[i][j - 1]);
+        }
+      }
+      return String(dp[0][n - 1]);
+    },
+    tests: [
+      { input: "bbbab", sample: true },
+      { input: "cbbd", sample: true },
+      { input: "agbdba", sample: true },
+      { input: "a" },
+      { input: "abcdef" },
+      { input: "aibohphobia" },
+    ],
+  },
+
+  {
+    slug: "perfect-squares",
+    title: "Perfect Squares",
+    difficulty: "MEDIUM",
+    statement: `Return the least number of perfect squares (1, 4, 9, 16, …) that sum to \`n\`.
+
+**Input**: one line, the integer \`n\`.
+**Output**: the minimum count.`,
+    constraints: `- 1 ≤ n ≤ 10^4`,
+    examples: [
+      { input: "12", output: "3", explanation: "4 + 4 + 4." },
+      { input: "13", output: "2", explanation: "4 + 9." },
+    ],
+    hints: [
+      "It's coin change with coin denominations 1, 4, 9, 16, … — unlimited supply, minimize coins.",
+      "dp[i] = 1 + min over squares j² ≤ i of dp[i − j²].",
+      "Greedy (take the largest square) fails: 12 → 9+1+1+1 is four, not three.",
+    ],
+    editorial: `Unbounded coin change in disguise: denominations are the squares up to n. Build \`dp[0..n]\` with dp[0] = 0 and \`dp[i] = 1 + min(dp[i − j²])\` over all j² ≤ i. O(n·√n) time, O(n) space — comfortably fast for 10⁴. Greedy-largest-square fails (12 = 9+1+1+1 vs 4+4+4), which is worth saying because it's the trap. Number-theory dessert: **Lagrange's four-square theorem** caps every answer at 4, and Legendre's three-square theorem characterizes exactly when the answer is 4 (n of the form 4ᵃ(8b+7)) — so an O(√n) mathematical solution exists. Mentioning it after coding the DP is pure bonus signal.`,
+    approaches: [
+      {
+        name: "Coin-change DP",
+        complexityTime: "O(n·√n)",
+        complexitySpace: "O(n)",
+        body: "dp[i] = 1 + min dp[i − j²]; squares are the coin set.",
+      },
+      {
+        name: "BFS on remainders",
+        complexityTime: "O(n·√n)",
+        complexitySpace: "O(n)",
+        body: "Shortest path from n to 0 subtracting squares — finds the level (answer) early.",
+      },
+      {
+        name: "Number theory",
+        complexityTime: "O(√n)",
+        complexitySpace: "O(1)",
+        body: "Answers are only ever 1–4 (Lagrange); classify with Legendre's condition.",
+      },
+    ],
+    complexityTime: "O(n·√n)",
+    complexitySpace: "O(n)",
+    youtubeUrl: yt("perfect squares leetcode dp"),
+    tags: ["dynamic-programming", "math", "bfs"],
+    starterCode: buildStarter("int", "int", "numSquares"),
+    reference: (input) => {
+      const n = int(lines(input)[0]);
+      const dp = new Array(n + 1).fill(Infinity);
+      dp[0] = 0;
+      for (let i = 1; i <= n; i++) {
+        for (let j = 1; j * j <= i; j++) {
+          const cand = dp[i - j * j] + 1;
+          if (cand < dp[i]) dp[i] = cand;
+        }
+      }
+      return String(dp[n]);
+    },
+    tests: [
+      { input: "12", sample: true },
+      { input: "13", sample: true },
+      { input: "1" },
+      { input: "7" },
+      { input: "9999" },
+      { input: "8935" },
+    ],
+  },
 ];

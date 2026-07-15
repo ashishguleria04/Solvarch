@@ -1,6 +1,6 @@
 import type { SeedProblem } from "../types";
 import { buildStarter } from "../starters";
-import { boolOut, yt, lines, words, sortedLinesOut } from "../ref-utils";
+import { boolOut, int, yt, lines, words, sortedLinesOut } from "../ref-utils";
 
 const line0 = (input: string) => input.split("\n")[0] ?? "";
 
@@ -494,6 +494,122 @@ export const strings: SeedProblem[] = [
       { input: "a\na" },
       { input: "mississippi\nissip" },
       { input: "abc\nabcd" },
+    ],
+  },
+
+  {
+    slug: "isomorphic-strings",
+    title: "Isomorphic Strings",
+    difficulty: "EASY",
+    statement: `Two strings are isomorphic if the characters of \`s\` can be replaced (via a consistent one-to-one mapping) to obtain \`t\`. Every occurrence of a character must map to the same character, and no two characters may map to the same one.
+
+**Input**
+- Line 1: string \`s\`
+- Line 2: string \`t\` (same length)
+
+**Output**: \`true\` or \`false\`.`,
+    constraints: `- 1 ≤ s.length = t.length ≤ 5·10^4
+- Printable ASCII characters.`,
+    examples: [
+      { input: "egg\nadd", output: "true", explanation: "e→a, g→d." },
+      { input: "foo\nbar", output: "false", explanation: "o would need to map to both a and r." },
+      { input: "badc\nbaba", output: "false", explanation: "b and d would both map to b." },
+    ],
+    hints: [
+      "Track the mapping s[i] → t[i] and reject contradictions.",
+      "One map isn't enough — 'badc'/'baba' needs the reverse mapping checked too.",
+    ],
+    editorial: `Walk both strings once with two hash maps: forward (s-char → t-char) and backward (t-char → s-char). At each position, if either map already holds a *different* partner for the current character, fail. The backward map is the part people forget — without it, two source characters can silently collapse onto one target ('badc' → 'baba'). One pass, O(n) time, O(k) space over the alphabet. Equivalent one-map trick: compare first-occurrence index patterns of both strings.`,
+    complexityTime: "O(n)",
+    complexitySpace: "O(k) — alphabet size",
+    youtubeUrl: yt("isomorphic strings leetcode"),
+    tags: ["string", "hash-map"],
+    starterCode: buildStarter("twoStrings", "bool", "isIsomorphic"),
+    reference: (input) => {
+      const [s = "", t = ""] = lines(input);
+      if (s.length !== t.length) return boolOut(false);
+      const fwd = new Map<string, string>();
+      const bwd = new Map<string, string>();
+      for (let i = 0; i < s.length; i++) {
+        const a = s[i];
+        const b = t[i];
+        if (fwd.has(a) && fwd.get(a) !== b) return boolOut(false);
+        if (bwd.has(b) && bwd.get(b) !== a) return boolOut(false);
+        fwd.set(a, b);
+        bwd.set(b, a);
+      }
+      return boolOut(true);
+    },
+    tests: [
+      { input: "egg\nadd", sample: true },
+      { input: "foo\nbar", sample: true },
+      { input: "badc\nbaba", sample: true },
+      { input: "paper\ntitle" },
+      { input: "a\na" },
+      { input: "ab\naa" },
+    ],
+  },
+
+  {
+    slug: "zigzag-conversion",
+    title: "Zigzag Conversion",
+    difficulty: "MEDIUM",
+    statement: `Write the string in a zigzag pattern over \`numRows\` rows (down the first column, diagonally up to the top, repeat), then read it row by row.
+
+For \`"PAYPALISHIRING"\` with 3 rows:
+
+\`\`\`
+P   A   H   N
+A P L S I I G
+Y   I   R
+\`\`\`
+
+Reading row-by-row gives \`"PAHNAPLSIIGYIR"\`.
+
+**Input**
+- Line 1: the string \`s\`
+- Line 2: the integer \`numRows\`
+
+**Output**: the converted string.`,
+    constraints: `- 1 ≤ s.length ≤ 1000
+- 1 ≤ numRows ≤ 1000`,
+    examples: [
+      { input: "PAYPALISHIRING\n3", output: "PAHNAPLSIIGYIR" },
+      { input: "PAYPALISHIRING\n4", output: "PINALSIGYAHRPI" },
+      { input: "AB\n1", output: "AB" },
+    ],
+    hints: [
+      "You never need the 2D grid — only which row each character lands in.",
+      "Walk the string appending to a current-row buffer; bounce direction at row 0 and row numRows−1.",
+      "numRows = 1 is the classic edge case — no bouncing possible.",
+    ],
+    editorial: `Simulate the zigzag with one counter: keep an array of numRows string builders, a current row, and a direction. Append each character to its row, flipping direction whenever you touch the top or bottom row, then concatenate the rows. O(n) time, O(n) space, and no geometry required. Guard numRows = 1 (or ≥ s.length) by returning s unchanged — the bounce logic would otherwise divide the walk by zero conceptually. The pure-math variant jumps indices by cycle length 2·numRows−2 per row; it's O(1) extra space but far easier to get wrong under pressure.`,
+    complexityTime: "O(n)",
+    complexitySpace: "O(n)",
+    youtubeUrl: yt("zigzag conversion leetcode"),
+    tags: ["string", "simulation"],
+    starterCode: buildStarter("stringInt", "string", "convert"),
+    reference: (input) => {
+      const s = lines(input)[0] ?? "";
+      const k = int(lines(input)[1]);
+      if (k <= 1 || k >= s.length) return s;
+      const rows: string[] = new Array(k).fill("");
+      let r = 0;
+      let dir = -1;
+      for (const ch of s) {
+        rows[r] += ch;
+        if (r === 0 || r === k - 1) dir = -dir;
+        r += dir;
+      }
+      return rows.join("");
+    },
+    tests: [
+      { input: "PAYPALISHIRING\n3", sample: true },
+      { input: "PAYPALISHIRING\n4", sample: true },
+      { input: "AB\n1", sample: true },
+      { input: "A\n5" },
+      { input: "ABCDEFGHIJ\n2" },
+      { input: "ABCD\n4" },
     ],
   },
 ];

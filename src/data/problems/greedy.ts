@@ -457,4 +457,60 @@ export const greedy: SeedProblem[] = [
       { input: "5 2\n0 5\n1 2\n2 3\n3 4\n4 6" },
     ],
   },
+
+  {
+    slug: "best-time-to-buy-and-sell-stock-ii",
+    title: "Best Time to Buy and Sell Stock II",
+    difficulty: "EASY",
+    statement: `Given daily prices, you may buy and sell as many times as you like (holding at most one share at a time; selling and re-buying the same day is allowed). Return the maximum total profit.
+
+**Input**: one line of space-separated prices.
+**Output**: the maximum profit.`,
+    constraints: `- 1 ≤ prices.length ≤ 3·10^4
+- 0 ≤ prices[i] ≤ 10^4`,
+    examples: [
+      {
+        input: "7 1 5 3 6 4",
+        output: "7",
+        explanation: "Buy 1 → sell 5 (+4), buy 3 → sell 6 (+3).",
+      },
+      { input: "1 2 3 4 5", output: "4", explanation: "One long hold — or every daily rise; same total." },
+      { input: "7 6 4 3 1", output: "0" },
+    ],
+    hints: [
+      "With unlimited transactions, which price movements can you capture?",
+      "Any multi-day gain decomposes into consecutive daily gains: p[j] − p[i] = Σ daily diffs.",
+      "Sum every positive prices[i] − prices[i−1].",
+    ],
+    editorial: `Harvest every rise: the answer is the sum of all positive day-over-day differences. Why the greedy is exact — any transaction's profit p[sell] − p[buy] telescopes into the sum of daily moves between them, so the best conceivable strategy can never beat collecting every positive move, and 'buy before each rise, sell after' actually achieves that collection. One pass, O(n)/O(1). Contrast with Stock I (single transaction — track min-so-far) and the k-transaction variants (DP): recognizing *which* constraint you're under is the real interview test here.`,
+    approaches: [
+      {
+        name: "Sum positive deltas",
+        complexityTime: "O(n)",
+        complexitySpace: "O(1)",
+        body: "profit += max(0, p[i] − p[i−1]) — the telescoping argument makes it exact.",
+      },
+    ],
+    complexityTime: "O(n)",
+    complexitySpace: "O(1)",
+    youtubeUrl: yt("best time to buy and sell stock ii greedy"),
+    tags: ["greedy", "array"],
+    starterCode: buildStarter("intArray", "int", "maxProfit"),
+    reference: (input) => {
+      const p = ints(lines(input)[0]);
+      let profit = 0;
+      for (let i = 1; i < p.length; i++) {
+        if (p[i] > p[i - 1]) profit += p[i] - p[i - 1];
+      }
+      return String(profit);
+    },
+    tests: [
+      { input: "7 1 5 3 6 4", sample: true },
+      { input: "1 2 3 4 5", sample: true },
+      { input: "7 6 4 3 1", sample: true },
+      { input: "5" },
+      { input: "2 1 2 0 1" },
+      { input: "3 3 5 0 0 3 1 4" },
+    ],
+  },
 ];

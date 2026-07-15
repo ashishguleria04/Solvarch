@@ -373,4 +373,59 @@ export const bitManipulation: SeedProblem[] = [
       { input: "1111\n1111" },
     ],
   },
+
+  {
+    slug: "hamming-distance",
+    title: "Hamming Distance",
+    difficulty: "EASY",
+    statement: `The Hamming distance between two integers is the number of bit positions where they differ. Given \`x\` and \`y\`, return their Hamming distance.
+
+**Input**: one line, two integers \`x y\`.
+**Output**: the Hamming distance.`,
+    constraints: `- 0 ≤ x, y ≤ 2^31 − 1`,
+    examples: [
+      {
+        input: "1 4",
+        output: "2",
+        explanation: "001 vs 100 — bits 0 and 2 differ.",
+      },
+      { input: "3 1", output: "1" },
+    ],
+    hints: [
+      "XOR marks exactly the differing positions with 1s.",
+      "The problem reduces to popcount(x ^ y).",
+      "Count set bits with Kernighan: n & (n − 1) clears the lowest one.",
+    ],
+    editorial: `Two ideas you already own, composed: \`x ^ y\` produces a mask whose set bits are precisely the disagreements, and Kernighan's loop (\`n &= n − 1\`, once per set bit) counts them. O(number of differing bits), O(1) space. Hamming distance is the unit of error detection — it's why parity bits catch single-bit flips and how error-correcting codes measure themselves — so this tiny problem has real hardware pedigree. Follow-up to expect: *total* Hamming distance over an array — per-bit column counting (ones × zeros per position), not pairwise XOR.`,
+    approaches: [
+      {
+        name: "XOR + Kernighan popcount",
+        complexityTime: "O(set bits)",
+        complexitySpace: "O(1)",
+        body: "Diff mask via XOR; strip lowest set bit until zero.",
+      },
+    ],
+    complexityTime: "O(1)",
+    complexitySpace: "O(1)",
+    youtubeUrl: yt("hamming distance leetcode"),
+    tags: ["bit-manipulation"],
+    starterCode: buildStarter("twoIntsLine", "int", "hammingDistance"),
+    reference: (input) => {
+      const [a, b] = ints(lines(input)[0]);
+      let x = a ^ b;
+      let count = 0;
+      while (x !== 0) {
+        x &= x - 1;
+        count++;
+      }
+      return String(count);
+    },
+    tests: [
+      { input: "1 4", sample: true },
+      { input: "3 1", sample: true },
+      { input: "0 0" },
+      { input: "0 2147483647" },
+      { input: "93 73" },
+    ],
+  },
 ];

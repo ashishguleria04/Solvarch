@@ -548,4 +548,69 @@ export const slidingWindow: SeedProblem[] = [
       { input: "cabwefgewcwaefgcf\ncae" },
     ],
   },
+
+  {
+    slug: "subarray-product-less-than-k",
+    title: "Subarray Product Less Than K",
+    difficulty: "MEDIUM",
+    statement: `Given an array of positive integers and an integer \`k\`, count the number of contiguous subarrays whose product is strictly less than \`k\`.
+
+**Input**
+- Line 1: space-separated positive integers
+- Line 2: the integer \`k\`
+
+**Output**: the count of qualifying subarrays.`,
+    constraints: `- 1 ≤ nums.length ≤ 3·10^4
+- 1 ≤ nums[i] ≤ 1000
+- 0 ≤ k ≤ 10^6`,
+    examples: [
+      {
+        input: "10 5 2 6\n100",
+        output: "8",
+        explanation: "[10], [5], [2], [6], [10 5], [5 2], [2 6], [5 2 6].",
+      },
+      { input: "1 2 3\n0", output: "0" },
+    ],
+    hints: [
+      "All values are ≥ 1, so extending a window never shrinks its product — that monotonicity is what makes a sliding window valid.",
+      "For each right endpoint, how many valid subarrays *end* there?",
+      "Exactly right − left + 1, where left is the smallest index keeping the product < k.",
+    ],
+    editorial: `Grow a window rightward, multiplying the product; while it reaches or exceeds k, divide off the left edge. Once the window [left, right] is valid, every subarray ending at right and starting at or after left is valid too — that's \`right − left + 1\` new subarrays, counted in O(1). Because all numbers are ≥ 1, the product is monotone in window size, so left only moves forward: O(n) total. Two traps: k ≤ 1 means *nothing* qualifies (answer 0 — guard it before the loop), and the counting-per-endpoint idea is the same one behind most 'count subarrays' window problems, so internalize it.`,
+    approaches: [
+      {
+        name: "Shrinking window with per-endpoint counting",
+        complexityTime: "O(n)",
+        complexitySpace: "O(1)",
+        body: "Maintain the maximal valid window per right endpoint; add its length.",
+      },
+    ],
+    complexityTime: "O(n)",
+    complexitySpace: "O(1)",
+    youtubeUrl: yt("subarray product less than k leetcode"),
+    tags: ["sliding-window", "array", "two-pointers"],
+    starterCode: buildStarter("intArrayK", "int", "numSubarrayProductLessThanK"),
+    reference: (input) => {
+      const nums = ints(lines(input)[0]);
+      const k = int(lines(input)[1]);
+      if (k <= 1) return "0";
+      let prod = 1;
+      let left = 0;
+      let count = 0;
+      for (let right = 0; right < nums.length; right++) {
+        prod *= nums[right];
+        while (prod >= k) prod /= nums[left++];
+        count += right - left + 1;
+      }
+      return String(count);
+    },
+    tests: [
+      { input: "10 5 2 6\n100", sample: true },
+      { input: "1 2 3\n0", sample: true },
+      { input: "1 1 1\n2" },
+      { input: "9\n10" },
+      { input: "9\n9" },
+      { input: "2 5 3 10 4 2\n30" },
+    ],
+  },
 ];

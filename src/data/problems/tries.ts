@@ -324,4 +324,65 @@ export const tries: SeedProblem[] = [
       { input: "aaaaaaa\naaaa aaa" },
     ],
   },
+
+  {
+    slug: "counting-words-with-a-given-prefix",
+    title: "Counting Words With a Given Prefix",
+    difficulty: "EASY",
+    statement: `Given a prefix string \`s\` and a list of words, return how many words have \`s\` as a prefix.
+
+**Input**
+- Line 1: the prefix \`s\`
+- Line 2: space-separated words
+
+**Output**: the count.`,
+    constraints: `- 1 ≤ words.length ≤ 100
+- 1 ≤ word and prefix lengths ≤ 100
+- Lowercase English letters.`,
+    examples: [
+      {
+        input: "at\npay attention practice attend",
+        output: "2",
+        explanation: '"attention" and "attend" start with "at".',
+      },
+      { input: "code\nleetcode win loops success", output: "0" },
+    ],
+    hints: [
+      "A direct scan with startsWith solves one query in O(total characters).",
+      "The trie view: insert every word, walk the prefix, read the pass-through count at the final node.",
+      "Store a counter on each trie node incremented at insert time — prefix queries become O(|prefix|).",
+    ],
+    editorial: `For a single query, scanning every word with \`startsWith\` is optimal and honest — O(total characters). The reason this problem lives in the trie topic: the moment you have *many* prefix queries over one dictionary, the trie with a per-node \`count\` (how many inserted words pass through this node) answers each query in O(|prefix|), independent of dictionary size. Insert all words once — each node on a word's path increments its counter — then a query just walks the prefix and returns the count at the last node (0 if the walk falls off). That per-node aggregate is the same trick behind autocomplete popularity counts and 'sum of prefix scores' problems.`,
+    approaches: [
+      {
+        name: "Linear scan",
+        complexityTime: "O(Σ|word|)",
+        complexitySpace: "O(1)",
+        body: "startsWith over the list — right for one query.",
+      },
+      {
+        name: "Trie with pass-through counts",
+        complexityTime: "O(Σ|word|) build, O(|prefix|) per query",
+        complexitySpace: "O(Σ|word|)",
+        body: "Counter on every node; queries read one node's counter.",
+      },
+    ],
+    complexityTime: "O(Σ|word|)",
+    complexitySpace: "O(Σ|word|)",
+    youtubeUrl: yt("counting words with a given prefix trie"),
+    tags: ["trie", "string"],
+    starterCode: buildStarter("stringWords", "int", "prefixCount"),
+    reference: (input) => {
+      const pref = (lines(input)[0] ?? "").trim();
+      const ws = words(lines(input)[1]);
+      return String(ws.filter((w) => w.startsWith(pref)).length);
+    },
+    tests: [
+      { input: "at\npay attention practice attend", sample: true },
+      { input: "code\nleetcode win loops success", sample: true },
+      { input: "a\na" },
+      { input: "ab\nab abc abd ba aab" },
+      { input: "zzz\nzz zzz zzzz z" },
+    ],
+  },
 ];

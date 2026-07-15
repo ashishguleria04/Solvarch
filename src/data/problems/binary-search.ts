@@ -512,4 +512,80 @@ export const binarySearch: SeedProblem[] = [
       { input: "-5 3 6 12 15\n-12 -10 -6 -3 4 10" },
     ],
   },
+
+  {
+    slug: "capacity-to-ship-packages-within-d-days",
+    title: "Capacity to Ship Packages Within D Days",
+    difficulty: "MEDIUM",
+    statement: `A conveyor belt has packages with given weights that must be shipped **in order**, splitting them across at most \`days\` days. The ship has a fixed daily capacity. Return the minimum capacity that ships everything within \`days\` days.
+
+**Input**
+- Line 1: space-separated package weights (in belt order)
+- Line 2: the integer \`days\`
+
+**Output**: the minimum ship capacity.`,
+    constraints: `- 1 ≤ weights.length ≤ 5·10^4
+- 1 ≤ weights[i] ≤ 500
+- 1 ≤ days ≤ weights.length`,
+    examples: [
+      {
+        input: "1 2 3 4 5 6 7 8 9 10\n5",
+        output: "15",
+        explanation: "Days: (1 2 3 4 5), (6 7), (8), (9), (10).",
+      },
+      { input: "3 2 2 4 1 4\n3", output: "6" },
+      { input: "1 2 3 1 1\n4", output: "3" },
+    ],
+    hints: [
+      "You can't reorder packages — a day is a contiguous chunk.",
+      "For a fixed capacity, checking feasibility is a greedy O(n) scan. That's the shape of binary-search-on-the-answer.",
+      "The answer lies between max(weights) (must fit the biggest package) and sum(weights) (one day ships all).",
+    ],
+    editorial: `Binary search over the *answer space*, not the array. Feasibility is monotone: if capacity C works, every capacity above C works too — exactly the sorted-boolean structure binary search needs. \`canShip(C)\` greedily packs each day until adding the next package would overflow, counting days; it's optimal per capacity because deferring a package never helps. Search [max(weights), sum(weights)], keeping the smallest feasible C. O(n log(sum − max)). This is the same template as Koko Eating Bananas — recognizing 'minimize X such that check(X) passes, check is monotone' is the entire skill.`,
+    approaches: [
+      {
+        name: "Binary search on capacity",
+        complexityTime: "O(n log Σw)",
+        complexitySpace: "O(1)",
+        body: "Greedy day-count feasibility check inside a search over [max, sum].",
+      },
+    ],
+    complexityTime: "O(n log Σw)",
+    complexitySpace: "O(1)",
+    youtubeUrl: yt("capacity to ship packages within d days neetcode"),
+    tags: ["binary-search", "greedy", "answer-space"],
+    starterCode: buildStarter("intArrayK", "int", "shipWithinDays"),
+    reference: (input) => {
+      const weights = ints(lines(input)[0]);
+      const days = int(lines(input)[1]);
+      let lo = Math.max(...weights);
+      let hi = weights.reduce((a, b) => a + b, 0);
+      const canShip = (cap: number): boolean => {
+        let d = 1;
+        let cur = 0;
+        for (const w of weights) {
+          if (cur + w > cap) {
+            d++;
+            cur = 0;
+          }
+          cur += w;
+        }
+        return d <= days;
+      };
+      while (lo < hi) {
+        const mid = (lo + hi) >> 1;
+        if (canShip(mid)) hi = mid;
+        else lo = mid + 1;
+      }
+      return String(lo);
+    },
+    tests: [
+      { input: "1 2 3 4 5 6 7 8 9 10\n5", sample: true },
+      { input: "3 2 2 4 1 4\n3", sample: true },
+      { input: "1 2 3 1 1\n4", sample: true },
+      { input: "10\n1" },
+      { input: "5 5 5 5\n4" },
+      { input: "500 200 300 100 400\n2" },
+    ],
+  },
 ];

@@ -550,4 +550,66 @@ export const stacksQueues: SeedProblem[] = [
       { input: "6 7 5 2 4 5 9 3" },
     ],
   },
+
+  {
+    slug: "next-greater-element-i",
+    title: "Next Greater Element I",
+    difficulty: "EASY",
+    statement: `\`nums1\` is a subset of \`nums2\` (all values distinct). For each element of \`nums1\`, find the first element **greater than it** appearing to its right in \`nums2\`, or −1 if none exists.
+
+**Input**
+- Line 1: space-separated integers — \`nums1\`
+- Line 2: space-separated integers — \`nums2\`
+
+**Output**: the answers for \`nums1\`, space-separated.`,
+    constraints: `- 1 ≤ nums1.length ≤ nums2.length ≤ 1000
+- All values in nums2 are distinct; every nums1 value appears in nums2.`,
+    examples: [
+      {
+        input: "4 1 2\n1 3 4 2",
+        output: "-1 3 -1",
+        explanation: "Nothing right of 4 is bigger; 3 follows 1; nothing follows 2.",
+      },
+      { input: "2 4\n1 2 3 4", output: "3 -1" },
+    ],
+    hints: [
+      "Solve it entirely on nums2 first; nums1 just reads the answers.",
+      "A monotonic decreasing stack: while the new element beats the stack top, the top just found its next-greater.",
+      "Store the results in a map keyed by value (values are distinct).",
+    ],
+    editorial: `One pass over nums2 with a monotonic stack: push each element; whenever the incoming value exceeds the stack top, pop it and record incoming as its next-greater in a hash map. Elements left on the stack at the end have no answer (−1). Then map nums1 through the answers. Every element is pushed and popped at most once — O(n + m). This is the miniature version of the monotonic-stack pattern behind Daily Temperatures and stock spans: the stack always holds elements still waiting for something bigger.`,
+    approaches: [
+      {
+        name: "Monotonic stack + map",
+        complexityTime: "O(n + m)",
+        complexitySpace: "O(n)",
+        body: "Precompute next-greater for all of nums2; answer nums1 by lookup.",
+      },
+    ],
+    complexityTime: "O(n + m)",
+    complexitySpace: "O(n)",
+    youtubeUrl: yt("next greater element i monotonic stack"),
+    tags: ["stack", "monotonic-stack", "hash-map"],
+    starterCode: buildStarter("twoIntArrays", "intArray", "nextGreaterElement"),
+    reference: (input) => {
+      const nums1 = ints(lines(input)[0]);
+      const nums2 = ints(lines(input)[1]);
+      const next = new Map<number, number>();
+      const stack: number[] = [];
+      for (const x of nums2) {
+        while (stack.length && stack[stack.length - 1] < x) {
+          next.set(stack.pop() as number, x);
+        }
+        stack.push(x);
+      }
+      return arrOut(nums1.map((x) => next.get(x) ?? -1));
+    },
+    tests: [
+      { input: "4 1 2\n1 3 4 2", sample: true },
+      { input: "2 4\n1 2 3 4", sample: true },
+      { input: "5\n5" },
+      { input: "1 3 5 2 4\n6 5 4 3 2 1" },
+      { input: "3 1 4 2\n1 2 3 4" },
+    ],
+  },
 ];

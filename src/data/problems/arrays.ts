@@ -607,4 +607,114 @@ export const arrays: SeedProblem[] = [
       { input: "1 1" },
     ],
   },
+
+  {
+    slug: "longest-consecutive-sequence",
+    title: "Longest Consecutive Sequence",
+    difficulty: "MEDIUM",
+    statement: `Given an unsorted array of integers, return the length of the longest run of consecutive values (e.g. 1, 2, 3, 4) present anywhere in the array. Your algorithm must run in O(n) time — sorting is the baseline to beat.
+
+**Input**: one line of space-separated integers (may be empty).
+**Output**: the length of the longest consecutive run.`,
+    constraints: `- 0 ≤ nums.length ≤ 10^5
+- -10^9 ≤ values ≤ 10^9`,
+    examples: [
+      {
+        input: "100 4 200 1 3 2",
+        output: "4",
+        explanation: "The run 1, 2, 3, 4 has length 4.",
+      },
+      { input: "0 3 7 2 5 8 4 6 0 1", output: "9" },
+    ],
+    hints: [
+      "A hash set answers 'does x exist?' in O(1).",
+      "Only start counting from numbers that begin a run — those with no x−1 in the set.",
+      "Each element is then visited at most twice overall.",
+    ],
+    editorial: `Dump everything into a hash set. A value x starts a run only if x−1 is absent — so for each such x, walk x+1, x+2, … while they exist and track the best length. Every element is touched O(1) times amortized (once as a member, once as a potential starter), giving O(n) despite the nested-looking loop. The 'only start at run beginnings' guard is the entire trick — without it the walk degenerates to O(n²).`,
+    approaches: [
+      {
+        name: "Sort and scan",
+        complexityTime: "O(n log n)",
+        complexitySpace: "O(1)",
+        body: "Sort, then count streaks skipping duplicates. Simple, but misses the O(n) requirement.",
+      },
+      {
+        name: "Hash set run-starts",
+        complexityTime: "O(n)",
+        complexitySpace: "O(n)",
+        body: "Set membership + walk upward only from values with no predecessor.",
+      },
+    ],
+    complexityTime: "O(n)",
+    complexitySpace: "O(n)",
+    youtubeUrl: yt("neetcode longest consecutive sequence"),
+    tags: ["array", "hash-set"],
+    starterCode: buildStarter("intArray", "int", "longestConsecutive"),
+    reference: (input) => {
+      const nums = first(input);
+      const set = new Set(nums);
+      let best = 0;
+      for (const x of set) {
+        if (set.has(x - 1)) continue;
+        let len = 1;
+        while (set.has(x + len)) len++;
+        if (len > best) best = len;
+      }
+      return String(best);
+    },
+    tests: [
+      { input: "100 4 200 1 3 2", sample: true },
+      { input: "0 3 7 2 5 8 4 6 0 1", sample: true },
+      { input: "" },
+      { input: "5" },
+      { input: "9 1 4 7 3 -1 0 5 8 -1 6" },
+      { input: "-3 -2 -1 0 1" },
+    ],
+  },
+
+  {
+    slug: "pascals-triangle",
+    title: "Pascal's Triangle",
+    difficulty: "EASY",
+    statement: `Generate the first \`n\` rows of Pascal's triangle, where every number is the sum of the two directly above it.
+
+**Input**: one line, the integer \`n\`.
+**Output**: n lines — row i contains i space-separated integers.`,
+    constraints: `- 1 ≤ n ≤ 30`,
+    examples: [
+      {
+        input: "5",
+        output: "1\n1 1\n1 2 1\n1 3 3 1\n1 4 6 4 1",
+      },
+      { input: "1", output: "1" },
+    ],
+    hints: [
+      "Row i has i+1 entries; the first and last are always 1.",
+      "Each interior entry is prev[j-1] + prev[j].",
+    ],
+    editorial: `Build row by row: start each row as all 1s, then fill interior cells from the previous row — \`row[j] = prev[j−1] + prev[j]\`. Total work is 1 + 2 + … + n = O(n²), which is also the output size, so it's optimal. The follow-up worth knowing: a *single* row k can be produced in O(k) with the multiplicative identity C(n, r+1) = C(n, r) · (n−r)/(r+1).`,
+    complexityTime: "O(n²)",
+    complexitySpace: "O(n²)",
+    youtubeUrl: yt("pascals triangle leetcode"),
+    tags: ["array", "math", "simulation"],
+    starterCode: buildStarter("int", "intMatrix", "generate"),
+    reference: (input) => {
+      const n = int(lines(input)[0]);
+      const rows: number[][] = [];
+      for (let i = 0; i < n; i++) {
+        const row = new Array(i + 1).fill(1);
+        for (let j = 1; j < i; j++) row[j] = rows[i - 1][j - 1] + rows[i - 1][j];
+        rows.push(row);
+      }
+      return matOut(rows);
+    },
+    tests: [
+      { input: "5", sample: true },
+      { input: "1", sample: true },
+      { input: "2" },
+      { input: "10" },
+      { input: "30" },
+    ],
+  },
 ];

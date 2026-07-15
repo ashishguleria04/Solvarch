@@ -522,4 +522,68 @@ export const twoPointers: SeedProblem[] = [
       { input: "cuucu" },
     ],
   },
+
+  {
+    slug: "boats-to-save-people",
+    title: "Boats to Save People",
+    difficulty: "MEDIUM",
+    statement: `Each boat carries at most **two** people, subject to a weight \`limit\`. Given everyone's weights, return the minimum number of boats needed to carry every person.
+
+**Input**
+- Line 1: space-separated weights
+- Line 2: the integer \`limit\`
+
+**Output**: the minimum number of boats.`,
+    constraints: `- 1 ≤ people.length ≤ 5·10^4
+- 1 ≤ people[i] ≤ limit ≤ 3·10^4`,
+    examples: [
+      { input: "1 2\n3", output: "1" },
+      {
+        input: "3 2 2 1\n3",
+        output: "3",
+        explanation: "Boats: (1,2), (2), (3).",
+      },
+      { input: "3 5 3 4\n5", output: "4", explanation: "No two fit together." },
+    ],
+    hints: [
+      "Sort. Who should share a boat with the heaviest person?",
+      "If the lightest can't pair with the heaviest, the heaviest rides alone — no better partner exists.",
+      "Two pointers converging from both ends; one boat per step.",
+    ],
+    editorial: `Sort the weights and converge two pointers. Each round, the heaviest remaining person boards a boat; the lightest joins them if the pair fits under the limit, otherwise the heavy one sails alone. The greedy is safe because the heaviest person's only possible partner is *someone*, and the lightest is the most likely candidate — if even they don't fit, nobody does. Since each person can only pair with one other (capacity two), no cleverer matching exists. O(n log n) for the sort, O(1) extra beyond it.`,
+    approaches: [
+      {
+        name: "Sort + two pointers",
+        complexityTime: "O(n log n)",
+        complexitySpace: "O(1)",
+        body: "Pair lightest with heaviest when possible; heaviest goes alone otherwise.",
+      },
+    ],
+    complexityTime: "O(n log n)",
+    complexitySpace: "O(1)",
+    youtubeUrl: yt("boats to save people leetcode"),
+    tags: ["two-pointers", "greedy", "sorting"],
+    starterCode: buildStarter("intArrayK", "int", "numRescueBoats"),
+    reference: (input) => {
+      const people = ints(lines(input)[0]).sort((a, b) => a - b);
+      const limit = int(lines(input)[1]);
+      let i = 0;
+      let j = people.length - 1;
+      let boats = 0;
+      while (i <= j) {
+        if (people[i] + people[j] <= limit) i++;
+        j--;
+        boats++;
+      }
+      return String(boats);
+    },
+    tests: [
+      { input: "1 2\n3", sample: true },
+      { input: "3 2 2 1\n3", sample: true },
+      { input: "3 5 3 4\n5", sample: true },
+      { input: "5\n5" },
+      { input: "1 1 1 1\n2" },
+      { input: "2 4 5 1 3 6\n6" },
+    ],
+  },
 ];

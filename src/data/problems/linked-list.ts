@@ -450,4 +450,115 @@ export const linkedList: SeedProblem[] = [
       { input: "1 2" },
     ],
   },
+
+  {
+    slug: "swap-nodes-in-pairs",
+    title: "Swap Nodes in Pairs",
+    difficulty: "EASY",
+    statement: `Swap every two adjacent nodes of the list and return the new head. Swap the **nodes themselves**, not just their values.
+
+**Input**: one line of space-separated integers — the list values (may be empty).
+**Output**: the resulting list's values, space-separated.`,
+    constraints: `- 0 ≤ list length ≤ 100`,
+    examples: [
+      { input: "1 2 3 4", output: "2 1 4 3" },
+      { input: "1", output: "1" },
+      { input: "1 2 3", output: "2 1 3" },
+    ],
+    hints: [
+      "A dummy node before the head removes the 'new head' special case.",
+      "To swap (a, b) you must also rewire the node *before* a — track prev.",
+      "Draw the four pointer updates before coding; order matters.",
+    ],
+    editorial: `Use a dummy pre-head and a \`prev\` pointer. For each pair (a = prev.next, b = a.next): point prev at b, a at b's successor, b at a — then advance prev to a. The dummy makes the head swap identical to every other swap, which is the whole lesson of this problem: sentinel nodes delete edge cases. O(n) time, O(1) space. The recursive version (swap first pair, recurse on the rest) reads beautifully but spends O(n) stack.`,
+    approaches: [
+      {
+        name: "Iterative with dummy",
+        complexityTime: "O(n)",
+        complexitySpace: "O(1)",
+        body: "Three-pointer rewire per pair behind a sentinel node.",
+      },
+      {
+        name: "Recursive",
+        complexityTime: "O(n)",
+        complexitySpace: "O(n)",
+        body: "head.next = swapPairs(head.next.next); return the old second node.",
+      },
+    ],
+    complexityTime: "O(n)",
+    complexitySpace: "O(1)",
+    youtubeUrl: yt("swap nodes in pairs leetcode"),
+    tags: ["linked-list", "recursion"],
+    starterCode: buildStarter("list", "list", "swapPairs"),
+    reference: (input) => {
+      const a = first(input);
+      for (let i = 0; i + 1 < a.length; i += 2) {
+        const t = a[i];
+        a[i] = a[i + 1];
+        a[i + 1] = t;
+      }
+      return arrOut(a);
+    },
+    tests: [
+      { input: "1 2 3 4", sample: true },
+      { input: "1", sample: true },
+      { input: "1 2 3", sample: true },
+      { input: "" },
+      { input: "5 4 3 2 1 0" },
+    ],
+  },
+
+  {
+    slug: "rotate-list",
+    title: "Rotate List",
+    difficulty: "MEDIUM",
+    statement: `Rotate the list to the right by \`k\` places: the last \`k\` nodes move to the front (in order).
+
+**Input**
+- Line 1: space-separated integers — the list values (may be empty)
+- Line 2: the integer \`k\`
+
+**Output**: the rotated list's values, space-separated.`,
+    constraints: `- 0 ≤ list length ≤ 500
+- 0 ≤ k ≤ 2·10^9`,
+    examples: [
+      { input: "1 2 3 4 5\n2", output: "4 5 1 2 3" },
+      { input: "0 1 2\n4", output: "2 0 1", explanation: "k=4 on length 3 is k=1." },
+    ],
+    hints: [
+      "k can exceed the length — rotating by n is a no-op, so reduce k mod n first.",
+      "Find the length, connect tail to head to form a ring, then cut it at the right place.",
+      "The new tail is at position n − k − 1 (0-indexed) from the old head.",
+    ],
+    editorial: `Walk once to find the length n and the tail; take k mod n (if n is 0 or k reduces to 0, return the list unchanged). Join tail → head to close the ring, walk n − k − 1 steps from the old head to the new tail, set the new head to its successor, and cut. Two passes, O(n) time, O(1) space. The mod is where naive solutions die — k up to 2·10⁹ makes step-by-step rotation a timeout, and forgetting the empty-list guard makes it a crash.`,
+    approaches: [
+      {
+        name: "Close the ring and cut",
+        complexityTime: "O(n)",
+        complexitySpace: "O(1)",
+        body: "Length + tail in one pass; link tail to head; sever at n − k mod n.",
+      },
+    ],
+    complexityTime: "O(n)",
+    complexitySpace: "O(1)",
+    youtubeUrl: yt("rotate list leetcode"),
+    tags: ["linked-list", "two-pointers"],
+    starterCode: buildStarter("listK", "list", "rotateRight"),
+    reference: (input) => {
+      const a = ints(lines(input)[0]);
+      const kRaw = int(lines(input)[1]);
+      const n = a.length;
+      if (n === 0) return "";
+      const k = kRaw % n;
+      return arrOut(a.slice(n - k).concat(a.slice(0, n - k)));
+    },
+    tests: [
+      { input: "1 2 3 4 5\n2", sample: true },
+      { input: "0 1 2\n4", sample: true },
+      { input: "\n3" },
+      { input: "1\n99" },
+      { input: "1 2\n2" },
+      { input: "7 8 9\n0" },
+    ],
+  },
 ];
