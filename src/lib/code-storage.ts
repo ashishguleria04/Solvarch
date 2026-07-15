@@ -5,6 +5,7 @@
 // only code that differs from the starter is stored, so untouched problems
 // leave no residue and "reset to starter" naturally clears the draft.
 
+import { useSyncExternalStore } from "react";
 import { z } from "zod";
 
 const KEY_PREFIX = "solvarch.code.v1:";
@@ -18,7 +19,11 @@ const draftSchema = z.object({
 
 export type CodeDraft = z.infer<typeof draftSchema>;
 
-export function loadCodeDraft(slug: string): CodeDraft | null {
+// Snapshot cache: useSyncExternalStore needs a stable reference per slug,
+// and saves keep it coherent so a remount restores the latest draft.
+const draftCache = new Map<string, CodeDraft | null>();
+
+function readDraft(slug: string): CodeDraft | null {
   try {
     const raw = window.localStorage.getItem(KEY_PREFIX + slug);
     if (!raw) return null;
@@ -27,6 +32,22 @@ export function loadCodeDraft(slug: string): CodeDraft | null {
   } catch {
     return null;
   }
+}
+
+function getDraftSnapshot(slug: string): CodeDraft | null {
+  if (!draftCache.has(slug)) draftCache.set(slug, readDraft(slug));
+  return draftCache.get(slug) ?? null;
+}
+
+const emptySubscribe = () => () => {};
+
+/** The saved draft for a problem, if any. Server-renders as null. */
+export function useCodeDraft(slug: string): CodeDraft | null {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => getDraftSnapshot(slug),
+    () => null
+  );
 }
 
 export function saveCodeDraft(
@@ -41,6 +62,7 @@ export function saveCodeDraft(
   }
   try {
     if (Object.keys(languages).length === 0) {
+      draftCache.set(slug, null);
       window.localStorage.removeItem(KEY_PREFIX + slug);
       return;
     }
@@ -49,6 +71,7 @@ export function saveCodeDraft(
       lastLanguage,
       updatedAt: new Date().toISOString(),
     };
+    draftCache.set(slug, draft);
     window.localStorage.setItem(KEY_PREFIX + slug, JSON.stringify(draft));
   } catch {
     // Storage full or unavailable — the in-memory editor state still works.

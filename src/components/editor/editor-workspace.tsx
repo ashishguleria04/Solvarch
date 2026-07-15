@@ -70,58 +70,52 @@ export function EditorWorkspace({
   starterCode: StarterCode;
   onSolved?: () => void;
 }) {
-  const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
-  const [codeByLang, setCodeByLang] = useState<StarterCode>({ ...starterCode });
+  // Saved draft (localStorage) restores work across reloads; this session's
+  // edits overlay it, and the code shown is derived: edit → draft → starter.
+  const draft = useCodeDraft(slug);
+  const [edits, setEdits] = useState<StarterCode>({});
+  const [chosenLanguage, setChosenLanguage] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [run, setRun] = useState<RunResult | null>(null);
   const [submit, setSubmit] = useState<SubmitResult | null>(null);
 
-  const code = codeByLang[language] ?? starterCode[language] ?? "";
+  const language =
+    chosenLanguage ??
+    (draft?.lastLanguage && getLanguage(draft.lastLanguage)
+      ? draft.lastLanguage
+      : DEFAULT_LANGUAGE);
+  const code =
+    edits[language] ?? draft?.languages[language] ?? starterCode[language] ?? "";
   const busy = running || submitting;
-
-  // Restore any saved draft after mount (localStorage is client-only).
-  useEffect(() => {
-    const draft = loadCodeDraft(slug);
-    if (!draft) return;
-    setCodeByLang((prev) => ({ ...prev, ...draft.languages }));
-    if (draft.lastLanguage && getLanguage(draft.lastLanguage)) {
-      setLanguage(draft.lastLanguage);
-    }
-  }, [slug]);
 
   // Debounced autosave so a reload or accidental navigation keeps the code.
   useEffect(() => {
-    const t = setTimeout(
-      () => saveCodeDraft(slug, codeByLang, language, starterCode),
-      400
-    );
+    const t = setTimeout(() => {
+      saveCodeDraft(slug, { ...draft?.languages, ...edits }, language, starterCode);
+    }, 400);
     return () => clearTimeout(t);
-  }, [slug, codeByLang, language, starterCode]);
+  }, [slug, edits, language, draft, starterCode]);
 
   // Flush the latest draft on unmount so edits inside the debounce window
   // survive in-app navigation.
-  const latest = useRef({ codeByLang, language });
+  const latest = useRef({ edits, language, draft });
   useEffect(() => {
-    latest.current = { codeByLang, language };
-  }, [codeByLang, language]);
+    latest.current = { edits, language, draft };
+  }, [edits, language, draft]);
   useEffect(() => {
     return () => {
-      saveCodeDraft(
-        slug,
-        latest.current.codeByLang,
-        latest.current.language,
-        starterCode
-      );
+      const { edits, language, draft } = latest.current;
+      saveCodeDraft(slug, { ...draft?.languages, ...edits }, language, starterCode);
     };
   }, [slug, starterCode]);
 
   function setCode(value: string) {
-    setCodeByLang((prev) => ({ ...prev, [language]: value }));
+    setEdits((prev) => ({ ...prev, [language]: value }));
   }
 
   function reset() {
-    setCodeByLang((prev) => ({ ...prev, [language]: starterCode[language] ?? "" }));
+    setEdits((prev) => ({ ...prev, [language]: starterCode[language] ?? "" }));
     toast.success("Reset to starter code.");
   }
 
