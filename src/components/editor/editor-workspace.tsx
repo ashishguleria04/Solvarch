@@ -22,7 +22,7 @@ import {
 import { CodeEditor } from "@/components/editor/code-editor";
 import { OutputDiff } from "@/components/editor/output-diff";
 import { LANGUAGES, DEFAULT_LANGUAGE, getLanguage } from "@/lib/constants";
-import { loadCodeDraft, saveCodeDraft } from "@/lib/code-storage";
+import { saveCodeDraft, useCodeDraft } from "@/lib/code-storage";
 import { recordAttempt, recordSolved } from "@/lib/progress";
 import { cn } from "@/lib/utils";
 
@@ -178,7 +178,7 @@ export function EditorWorkspace({
     <div className="flex h-full flex-col">
       {/* Toolbar */}
       <div className="flex items-center gap-2 border-b border-border bg-card/50 px-3 py-2">
-        <Select value={language} onValueChange={setLanguage}>
+        <Select value={language} onValueChange={setChosenLanguage}>
           <SelectTrigger size="sm" className="w-36">
             <SelectValue />
           </SelectTrigger>
