@@ -75,7 +75,12 @@ export function DsaProgress({
       className="relative rounded-xl border border-border bg-card/50 p-4 sm:p-5"
     >
       <div className="absolute right-3 top-3">
-        <ProgressMenu hasProgress={Object.keys(progress.problems).length > 0} />
+        <ProgressMenu
+          hasProgress={
+            Object.keys(progress.problems).length > 0 ||
+            Object.keys(progress.content).length > 0
+          }
+        />
       </div>
 
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:gap-8">
@@ -265,9 +270,10 @@ function ProgressMenu({ hasProgress }: { hasProgress: boolean }) {
           <DialogHeader>
             <DialogTitle>Reset all progress?</DialogTitle>
             <DialogDescription>
-              This clears every solved and attempted problem plus your streak from
-              this browser. Progress is stored locally only, so this can&apos;t be
-              undone — export a backup first if you might want it back.
+              This clears every solved and attempted problem, your completed
+              reading marks, and your streak from this browser. Progress is
+              stored locally only, so this can&apos;t be undone — export a
+              backup first if you might want it back.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

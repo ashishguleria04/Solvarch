@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, PlayCircle } from "lucide-react";
 import { getSystemDesignEntries, getSystemDesignEntry } from "@/lib/content";
 import { Markdown } from "@/components/design-system/markdown";
+import { MarkCompleteButton } from "@/components/content/content-progress";
 
 type Params = { slug: string };
 
@@ -71,6 +72,10 @@ export default async function SystemDesignEntryPage({
       <article className="mt-6">
         <Markdown className="text-[0.95rem]">{body}</Markdown>
       </article>
+
+      <div className="mt-10 flex justify-center">
+        <MarkCompleteButton contentKey={`system-design/${slug}`} />
+      </div>
 
       {entry.videos.length > 0 && (
         <section className="mt-10 rounded-xl border border-border bg-card/40 p-5">

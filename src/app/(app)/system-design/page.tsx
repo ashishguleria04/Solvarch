@@ -4,6 +4,10 @@ import { Network, Layers3, Component, Clock } from "lucide-react";
 import { getSystemDesignEntries, type ContentEntry } from "@/lib/content";
 import { PageHeader } from "@/components/design-system/page-header";
 import { EmptyState } from "@/components/design-system/empty-state";
+import {
+  ContentCheckIcon,
+  ContentProgressSummary,
+} from "@/components/content/content-progress";
 import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = { title: "System Design" };
@@ -16,6 +20,10 @@ function CaseStudyCard({ entry }: { entry: ContentEntry }) {
           <h3 className="font-semibold tracking-tight transition-colors group-hover:text-primary">
             {entry.title}
           </h3>
+          <ContentCheckIcon
+            contentKey={`system-design/${entry.slug}`}
+            className="mt-1"
+          />
         </div>
         <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">
           {entry.description}
@@ -50,6 +58,7 @@ function TopicRow({ entry }: { entry: ContentEntry }) {
       </div>
       <div className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
         <span>{entry.readingMinutes} min</span>
+        <ContentCheckIcon contentKey={`system-design/${entry.slug}`} />
       </div>
     </Link>
   );
@@ -79,6 +88,11 @@ export default async function SystemDesignPage() {
       <PageHeader
         title="System Design"
         description="Case studies with real architectures, plus the HLD and LLD concepts interviewers probe."
+        action={
+          <ContentProgressSummary
+            keys={entries.map((e) => `system-design/${e.slug}`)}
+          />
+        }
       />
 
       {caseStudies.length > 0 && (

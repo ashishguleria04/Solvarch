@@ -10,9 +10,21 @@ import {
   MessagesSquare,
   CheckCircle2,
 } from "lucide-react";
+import { problems } from "@/data/dsa";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/design-system/container";
 import { FadeIn } from "@/components/design-system/fade-in";
+import {
+  DailyProblemCard,
+  type DailyCatalogEntry,
+} from "@/components/marketing/daily-problem";
+
+const dailyCatalog: DailyCatalogEntry[] = problems.map((p) => ({
+  slug: p.slug,
+  title: p.title,
+  difficulty: p.difficulty,
+  topicName: p.topic.name,
+}));
 
 const features = [
   {
@@ -148,6 +160,15 @@ export default function LandingPage() {
               </div>
             </FadeIn>
           </div>
+        </Container>
+      </section>
+
+      {/* Daily problem */}
+      <section className="border-t border-border/60 py-10">
+        <Container>
+          <FadeIn>
+            <DailyProblemCard problems={dailyCatalog} />
+          </FadeIn>
         </Container>
       </section>
 

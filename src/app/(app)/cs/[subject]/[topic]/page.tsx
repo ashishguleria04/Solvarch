@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
 import { CS_SUBJECTS, getCsSubject, getCsTopic, getCsTopics } from "@/lib/content";
 import { Markdown } from "@/components/design-system/markdown";
+import { MarkCompleteButton } from "@/components/content/content-progress";
 
 type Params = { subject: string; topic: string };
 
@@ -70,7 +71,11 @@ export default async function CsTopicPage({ params }: { params: Promise<Params> 
         <Markdown className="text-[0.95rem]">{entry.body}</Markdown>
       </article>
 
-      <nav className="mt-10 flex items-stretch justify-between gap-4 border-t border-border pt-6">
+      <div className="mt-10 flex justify-center">
+        <MarkCompleteButton contentKey={`cs/${subject}/${topic}`} />
+      </div>
+
+      <nav className="mt-8 flex items-stretch justify-between gap-4 border-t border-border pt-6">
         {prev ? (
           <Link
             href={`/cs/${subject}/${prev.slug}`}

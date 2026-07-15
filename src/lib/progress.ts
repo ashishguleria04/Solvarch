@@ -1,8 +1,9 @@
 "use client";
 
-// Local progress tracking — solved/attempted status per problem plus a per-day
-// solve log for streaks, persisted to localStorage. There are no accounts, so
-// this is the only record of progress; export/import moves it between browsers.
+// Local progress tracking — solved/attempted status per problem, completed
+// marks for CS/system-design reading, plus a per-day solve log for streaks,
+// persisted to localStorage. There are no accounts, so this is the only
+// record of progress; export/import moves it between browsers.
 
 import { useSyncExternalStore } from "react";
 import { z } from "zod";
@@ -18,18 +19,33 @@ const problemProgressSchema = z.object({
   lastActivityAt: z.string().optional(),
 });
 
+const contentProgressSchema = z.object({
+  completedAt: z.string(),
+});
+
 const progressStateSchema = z.object({
   version: z.literal(1),
   problems: z.record(z.string(), problemProgressSchema),
+  /**
+   * Reading-content completion, keyed "cs/{subject}/{topic}" or
+   * "system-design/{slug}". Defaulted so pre-content exports still parse.
+   */
+  content: z.record(z.string(), contentProgressSchema).default({}),
   /** Local-date day key ("YYYY-MM-DD") → accepted submissions that day. */
   activity: z.record(z.string(), z.number().int().nonnegative()),
 });
 
 export type ProblemProgress = z.infer<typeof problemProgressSchema>;
+export type ContentProgress = z.infer<typeof contentProgressSchema>;
 export type ProgressState = z.infer<typeof progressStateSchema>;
 export type ProblemStatus = ProblemProgress["status"];
 
-const EMPTY_STATE: ProgressState = { version: 1, problems: {}, activity: {} };
+const EMPTY_STATE: ProgressState = {
+  version: 1,
+  problems: {},
+  content: {},
+  activity: {},
+};
 
 // Snapshot cache so useSyncExternalStore gets a stable reference between
 // writes. Mutators always produce new objects; EMPTY_STATE is never mutated.
@@ -94,10 +110,37 @@ export function problemStatus(
   return state.problems[slug]?.status ?? null;
 }
 
+export function isContentDone(state: ProgressState, key: string): boolean {
+  return !!state.content[key];
+}
+
+export function contentDoneCount(state: ProgressState, keys: string[]): number {
+  return keys.reduce((n, key) => n + (state.content[key] ? 1 : 0), 0);
+}
+
+/** Toggle a reading item's completed mark; returns the new done state. */
+export function toggleContentDone(key: string): boolean {
+  const state = getSnapshot();
+  const content = { ...state.content };
+  const done = !content[key];
+  if (done) {
+    content[key] = { completedAt: new Date().toISOString() };
+  } else {
+    delete content[key];
+  }
+  write({ ...state, content });
+  return done;
+}
+
 function dayKey(d: Date): string {
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${d.getFullYear()}-${m}-${day}`;
+}
+
+/** Today's local-date key ("YYYY-MM-DD") — the same key streaks count by. */
+export function localDayKey(now = new Date()): string {
+  return dayKey(now);
 }
 
 function previousDay(d: Date): Date {
@@ -231,11 +274,20 @@ function mergeProgress(a: ProgressState, b: ProgressState): ProgressState {
     const existing = problems[slug];
     problems[slug] = existing ? mergeProblem(existing, incoming) : incoming;
   }
+  const content = { ...a.content };
+  for (const [key, incoming] of Object.entries(b.content)) {
+    const existing = content[key];
+    // ISO timestamps compare correctly as strings; keep the earliest mark.
+    content[key] =
+      existing && existing.completedAt <= incoming.completedAt
+        ? existing
+        : incoming;
+  }
   const activity = { ...a.activity };
   for (const [day, count] of Object.entries(b.activity)) {
     activity[day] = Math.max(activity[day] ?? 0, count);
   }
-  return { version: 1, problems, activity };
+  return { version: 1, problems, content, activity };
 }
 
 function mergeProblem(a: ProblemProgress, b: ProblemProgress): ProblemProgress {

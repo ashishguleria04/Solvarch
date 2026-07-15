@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Play,
   Check,
@@ -20,7 +20,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CodeEditor } from "@/components/editor/code-editor";
-import { LANGUAGES, DEFAULT_LANGUAGE } from "@/lib/constants";
+import { OutputDiff } from "@/components/editor/output-diff";
+import { LANGUAGES, DEFAULT_LANGUAGE, getLanguage } from "@/lib/constants";
+import { loadCodeDraft, saveCodeDraft } from "@/lib/code-storage";
 import { recordAttempt, recordSolved } from "@/lib/progress";
 import { cn } from "@/lib/utils";
 
@@ -77,6 +79,40 @@ export function EditorWorkspace({
 
   const code = codeByLang[language] ?? starterCode[language] ?? "";
   const busy = running || submitting;
+
+  // Restore any saved draft after mount (localStorage is client-only).
+  useEffect(() => {
+    const draft = loadCodeDraft(slug);
+    if (!draft) return;
+    setCodeByLang((prev) => ({ ...prev, ...draft.languages }));
+    if (draft.lastLanguage && getLanguage(draft.lastLanguage)) {
+      setLanguage(draft.lastLanguage);
+    }
+  }, [slug]);
+
+  // Debounced autosave so a reload or accidental navigation keeps the code.
+  useEffect(() => {
+    const t = setTimeout(
+      () => saveCodeDraft(slug, codeByLang, language, starterCode),
+      400
+    );
+    return () => clearTimeout(t);
+  }, [slug, codeByLang, language, starterCode]);
+
+  // Flush the latest draft on unmount so edits inside the debounce window
+  // survive in-app navigation.
+  const latest = useRef({ codeByLang, language });
+  latest.current = { codeByLang, language };
+  useEffect(() => {
+    return () => {
+      saveCodeDraft(
+        slug,
+        latest.current.codeByLang,
+        latest.current.language,
+        starterCode
+      );
+    };
+  }, [slug, starterCode]);
 
   function setCode(value: string) {
     setCodeByLang((prev) => ({ ...prev, [language]: value }));
@@ -207,8 +243,14 @@ function Verdict({ result }: { result: SubmitResult }) {
       {result.firstFailure && !accepted && (
         <div className="mt-3 space-y-2 font-mono text-xs">
           <FailRow label="Input" value={result.firstFailure.input} />
-          <FailRow label="Expected" value={result.firstFailure.expected} tone="ok" />
-          <FailRow label="Got" value={result.firstFailure.got || "(no output)"} tone="bad" />
+          <div>
+            <div className="text-muted-foreground">Output:</div>
+            <OutputDiff
+              expected={result.firstFailure.expected}
+              actual={result.firstFailure.got}
+              className="mt-0.5"
+            />
+          </div>
           {result.firstFailure.stderr && (
             <FailRow label="Stderr" value={result.firstFailure.stderr} tone="bad" />
           )}
@@ -293,15 +335,26 @@ function ResultsPanel({
               <span className="font-sans font-medium">Case {i + 1}</span>
             </div>
             <div className="text-muted-foreground">Input: {r.input.replace(/\n/g, " ⏎ ")}</div>
-            <div className="text-muted-foreground">
-              Expected: <span className="text-emerald-300">{r.expected}</span>
-            </div>
-            <div className="text-muted-foreground">
-              Got:{" "}
-              <span className={r.passed ? "text-emerald-300" : "text-rose-300"}>
-                {r.message ? r.message : r.stdout.trim() || "(no output)"}
-              </span>
-            </div>
+            {r.passed || r.message ? (
+              <>
+                <div className="text-muted-foreground">
+                  Expected: <span className="text-emerald-300">{r.expected}</span>
+                </div>
+                <div className="text-muted-foreground">
+                  Got:{" "}
+                  <span className={r.passed ? "text-emerald-300" : "text-rose-300"}>
+                    {r.message ? r.message : r.stdout.trim() || "(no output)"}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <OutputDiff expected={r.expected} actual={r.stdout} className="mt-1.5" />
+            )}
+            {!r.passed && r.stderr && (
+              <pre className="mt-1.5 overflow-x-auto whitespace-pre-wrap text-rose-300 scrollbar-thin">
+                {r.stderr}
+              </pre>
+            )}
           </div>
         ))}
       </div>

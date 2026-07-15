@@ -4,6 +4,10 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Clock } from "lucide-react";
 import { CS_SUBJECTS, getCsSubject, getCsTopics } from "@/lib/content";
 import { PageHeader } from "@/components/design-system/page-header";
+import {
+  ContentCheckIcon,
+  ContentProgressSummary,
+} from "@/components/content/content-progress";
 
 type Params = { subject: string };
 
@@ -41,7 +45,15 @@ export default async function CsSubjectPage({
         CS Fundamentals
       </Link>
 
-      <PageHeader title={s.name} description={s.description} />
+      <PageHeader
+        title={s.name}
+        description={s.description}
+        action={
+          <ContentProgressSummary
+            keys={topics.map((t) => `cs/${subject}/${t.slug}`)}
+          />
+        }
+      />
 
       <div className="rounded-xl border border-border bg-card/40 p-2">
         {topics.map((t, i) => (
@@ -63,6 +75,7 @@ export default async function CsSubjectPage({
               <Clock className="size-3.5" />
               {t.readingMinutes} min
             </span>
+            <ContentCheckIcon contentKey={`cs/${subject}/${t.slug}`} />
           </Link>
         ))}
       </div>

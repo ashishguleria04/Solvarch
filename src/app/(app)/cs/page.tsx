@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Cpu, Database, Globe, Boxes, ArrowRight, type LucideIcon } from "lucide-react";
 import { CS_SUBJECTS, getCsTopics } from "@/lib/content";
 import { PageHeader } from "@/components/design-system/page-header";
+import { ContentProgressSummary } from "@/components/content/content-progress";
 import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = { title: "CS Fundamentals" };
@@ -18,7 +19,9 @@ export default async function CsIndexPage() {
   const subjects = await Promise.all(
     CS_SUBJECTS.map(async (s) => ({
       ...s,
-      topicCount: (await getCsTopics(s.slug)).length,
+      topicKeys: (await getCsTopics(s.slug)).map(
+        (t) => `cs/${s.slug}/${t.slug}`
+      ),
     }))
   );
 
@@ -42,9 +45,12 @@ export default async function CsIndexPage() {
                   {s.name}
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">{s.description}</p>
-                <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
-                  {s.topicCount} topics
-                  <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                <span className="mt-4 flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                    {s.topicKeys.length} topics
+                    <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                  <ContentProgressSummary keys={s.topicKeys} />
                 </span>
               </Card>
             </Link>
