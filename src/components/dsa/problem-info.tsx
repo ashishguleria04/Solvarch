@@ -1,6 +1,7 @@
 import { Video, Clock, Database } from "lucide-react";
 import type { Difficulty } from "@/data/dsa";
 import { DifficultyBadge } from "@/components/design-system/difficulty-badge";
+import { SolvedBadge } from "@/components/dsa/problem-status";
 import { Markdown } from "@/components/design-system/markdown";
 import {
   Accordion,
@@ -18,6 +19,7 @@ export type Approach = {
 };
 
 export function ProblemDescription({
+  slug,
   title,
   difficulty,
   tags,
@@ -26,6 +28,7 @@ export function ProblemDescription({
   examples,
   youtubeUrl,
 }: {
+  slug: string;
   title: string;
   difficulty: Difficulty;
   tags: string[];
@@ -39,6 +42,7 @@ export function ProblemDescription({
       <div className="flex flex-wrap items-center gap-2">
         <h1 className="mr-1 text-xl font-semibold tracking-tight">{title}</h1>
         <DifficultyBadge difficulty={difficulty} />
+        <SolvedBadge slug={slug} />
       </div>
 
       {tags.length > 0 && (

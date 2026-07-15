@@ -37,6 +37,7 @@ export default async function ProblemPage({
     <ProblemInfoTabs
       description={
         <ProblemDescription
+          slug={problem.slug}
           title={problem.title}
           difficulty={problem.difficulty}
           tags={problem.tags}

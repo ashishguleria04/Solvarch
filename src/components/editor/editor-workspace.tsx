@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { CodeEditor } from "@/components/editor/code-editor";
 import { LANGUAGES, DEFAULT_LANGUAGE } from "@/lib/constants";
+import { recordAttempt, recordSolved } from "@/lib/progress";
 import { cn } from "@/lib/utils";
 
 type StarterCode = Record<string, string>;
@@ -125,11 +126,13 @@ export function EditorWorkspace({
       const result = data as SubmitResult;
       setSubmit(result);
       if (result.status === "ACCEPTED") {
+        recordSolved(slug, language);
         toast.success("Accepted! 🎉");
         onSolved?.();
       } else if (result.status === "PENDING") {
         toast.error(result.message ?? "The runner is unavailable.");
       } else {
+        recordAttempt(slug, language);
         toast.error(VERDICT_LABEL[result.status] ?? "Not quite — keep trying.");
       }
     } catch {

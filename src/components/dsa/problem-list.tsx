@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Difficulty } from "@/data/dsa";
 import { DifficultyBadge } from "@/components/design-system/difficulty-badge";
+import { ProblemStatusIcon } from "@/components/dsa/problem-status";
 
 type ProblemRow = {
   id: string;
@@ -28,12 +29,15 @@ export function ProblemList({ problems }: { problems: ProblemRow[] }) {
               {p.topic.name}
             </span>
 
-            <Link
-              href={`/dsa/${p.slug}`}
-              className="order-1 truncate font-medium hover:text-primary md:order-2"
-            >
-              {p.title}
-            </Link>
+            <span className="order-1 flex min-w-0 items-center gap-2.5 md:order-2">
+              <ProblemStatusIcon slug={p.slug} />
+              <Link
+                href={`/dsa/${p.slug}`}
+                className="truncate font-medium hover:text-primary"
+              >
+                {p.title}
+              </Link>
+            </span>
 
             <div className="order-3 flex items-center gap-2 md:hidden">
               <span className="text-xs text-muted-foreground">{p.topic.name}</span>
