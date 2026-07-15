@@ -5,7 +5,7 @@
 // by). Renders a placeholder until mounted since the server can't know the
 // visitor's date.
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, CheckCircle2, Flame } from "lucide-react";
 import type { Difficulty } from "@/data/dsa";
@@ -35,14 +35,25 @@ export function dailyIndex(day: string, count: number): number {
   return (h >>> 0) % count;
 }
 
+// The visitor's local date is unknowable on the server, so hydrate as null
+// and pick the problem on the client. Strings compare by value, so returning
+// a fresh key per render is stable for useSyncExternalStore.
+const emptySubscribe = () => () => {};
+function useLocalToday(): string | null {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => localDayKey(),
+    () => null
+  );
+}
+
 export function DailyProblemCard({
   problems,
 }: {
   problems: DailyCatalogEntry[];
 }) {
   const progress = useProgress();
-  const [today, setToday] = useState<string | null>(null);
-  useEffect(() => setToday(localDayKey()), []);
+  const today = useLocalToday();
 
   if (problems.length === 0) return null;
 

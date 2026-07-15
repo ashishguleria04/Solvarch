@@ -102,7 +102,9 @@ export function EditorWorkspace({
   // Flush the latest draft on unmount so edits inside the debounce window
   // survive in-app navigation.
   const latest = useRef({ codeByLang, language });
-  latest.current = { codeByLang, language };
+  useEffect(() => {
+    latest.current = { codeByLang, language };
+  }, [codeByLang, language]);
   useEffect(() => {
     return () => {
       saveCodeDraft(
