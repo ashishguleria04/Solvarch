@@ -16,8 +16,11 @@ export type ContentEntry = {
   slug: string;
   title: string;
   description: string;
-  /** system-design only: case-study | hld | lld */
-  category: "case-study" | "hld" | "lld" | null;
+  /**
+   * system-design: case-study | hld | lld
+   * cheatsheets: pattern | reference
+   */
+  category: "case-study" | "hld" | "lld" | "pattern" | "reference" | null;
   order: number;
   premium: boolean;
   tags: string[];
@@ -71,6 +74,19 @@ export const getSystemDesignEntries = cache(async (): Promise<ContentEntry[]> =>
 export const getSystemDesignEntry = cache(
   async (slug: string): Promise<ContentEntry | null> => {
     const entries = await getSystemDesignEntries();
+    return entries.find((e) => e.slug === slug) ?? null;
+  }
+);
+
+// -------------------------------------------------------------- cheat sheets
+
+export const getCheatsheetEntries = cache(async (): Promise<ContentEntry[]> => {
+  return loadDir("cheatsheets");
+});
+
+export const getCheatsheetEntry = cache(
+  async (slug: string): Promise<ContentEntry | null> => {
+    const entries = await getCheatsheetEntries();
     return entries.find((e) => e.slug === slug) ?? null;
   }
 );

@@ -2,6 +2,7 @@ import { Video, Clock, Database } from "lucide-react";
 import type { Difficulty } from "@/data/dsa";
 import { DifficultyBadge } from "@/components/design-system/difficulty-badge";
 import { SolvedBadge } from "@/components/dsa/problem-status";
+import { ReviewToggle } from "@/components/review/review-toggle";
 import { Markdown } from "@/components/design-system/markdown";
 import {
   Accordion,
@@ -43,6 +44,7 @@ export function ProblemDescription({
         <h1 className="mr-1 text-xl font-semibold tracking-tight">{title}</h1>
         <DifficultyBadge difficulty={difficulty} />
         <SolvedBadge slug={slug} />
+        <ReviewToggle slug={slug} />
       </div>
 
       {tags.length > 0 && (

@@ -26,6 +26,7 @@ import { LANGUAGES, DEFAULT_LANGUAGE, getLanguage } from "@/lib/constants";
 import { saveCodeDraft, useCodeDraft } from "@/lib/code-storage";
 import { useActivePractice } from "@/lib/practice";
 import { recordAttempt, recordSolved } from "@/lib/progress";
+import { completeDueReview, markForReview } from "@/lib/review";
 import type { Difficulty } from "@/data/dsa";
 import { cn } from "@/lib/utils";
 
@@ -173,12 +174,29 @@ export function EditorWorkspace({
       if (result.status === "ACCEPTED") {
         recordSolved(slug, language);
         toast.success("Accepted! 🎉");
+        // A due spaced-repetition review solved by resubmitting counts as passed.
+        const review = completeDueReview(slug);
+        if (review) {
+          toast.success(
+            review.outcome === "graduated"
+              ? "Review passed — graduated from the queue! 🎓"
+              : `Review passed — next one in ${review.nextInDays} days.`
+          );
+        }
         onSolved?.();
       } else if (result.status === "PENDING") {
         toast.error(result.message ?? "The runner is unavailable.");
       } else {
         recordAttempt(slug, language);
-        toast.error(VERDICT_LABEL[result.status] ?? "Not quite — keep trying.");
+        toast.error(VERDICT_LABEL[result.status] ?? "Not quite — keep trying.", {
+          action: {
+            label: "Review later",
+            onClick: () => {
+              markForReview(slug);
+              toast.success("Added to the review queue — due tomorrow.");
+            },
+          },
+        });
       }
     } catch {
       toast.error("Could not reach the code runner.");
