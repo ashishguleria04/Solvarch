@@ -1,30 +1,22 @@
 import Link from "next/link";
 import {
   ArrowRight,
+  Building2,
   Code2,
   Network,
   Cpu,
   Unlock,
   Sparkles,
   Terminal,
+  Timer,
   MessagesSquare,
   CheckCircle2,
 } from "lucide-react";
-import { problems } from "@/data/dsa";
+import { dailyCatalog } from "@/data/daily";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/design-system/container";
 import { FadeIn } from "@/components/design-system/fade-in";
-import {
-  DailyProblemCard,
-  type DailyCatalogEntry,
-} from "@/components/marketing/daily-problem";
-
-const dailyCatalog: DailyCatalogEntry[] = problems.map((p) => ({
-  slug: p.slug,
-  title: p.title,
-  difficulty: p.difficulty,
-  topicName: p.topic.name,
-}));
+import { DailyProblemCard } from "@/components/marketing/daily-problem";
 
 const features = [
   {
@@ -56,6 +48,18 @@ const features = [
     title: "Interview Question Bank",
     description:
       "Behavioral, HR, and technical-trivia questions with model answers and delivery tips you can actually use.",
+  },
+  {
+    icon: Building2,
+    title: "Company Question Banks",
+    description:
+      "Company-wise problem lists compiled from publicly shared interview experiences — see what Google, Amazon, and co. actually ask.",
+  },
+  {
+    icon: Timer,
+    title: "Timed Self-Practice",
+    description:
+      "A clock, zero feedback, and a self-scoring rubric after each attempt — build real interview discipline, not judge dependence.",
   },
   {
     icon: Unlock,

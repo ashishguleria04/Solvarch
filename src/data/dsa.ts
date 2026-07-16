@@ -4,7 +4,12 @@
 // reference solution over its test inputs.
 
 import { dsaTopics } from "./topics";
-import type { Difficulty, SeedProblem, SeedTopic } from "./types";
+import type {
+  Difficulty,
+  SeedProblem,
+  SeedTopic,
+  StarterLanguage,
+} from "./types";
 
 export type { Difficulty } from "./types";
 
@@ -62,6 +67,26 @@ const problemsBySlug = new Map(problems.map((p) => [p.slug, p]));
 
 export function getProblem(slug: string): Problem | null {
   return problemsBySlug.get(slug) ?? null;
+}
+
+/** Editor-facing starter code — the solution function only, no driver. */
+export function visibleStarters(p: Problem): Record<StarterLanguage, string> {
+  return {
+    python: p.starterCode.python.visible,
+    javascript: p.starterCode.javascript.visible,
+    java: p.starterCode.java.visible,
+    cpp: p.starterCode.cpp.visible,
+  };
+}
+
+/** Stitch the hidden stdin/stdout driver back around the learner's code. */
+export function assembleSource(
+  p: Problem,
+  language: string,
+  code: string
+): string {
+  const snippet = p.starterCode[language as StarterLanguage];
+  return snippet ? snippet.prefix + code + snippet.suffix : code;
 }
 
 export type ProblemFilters = {

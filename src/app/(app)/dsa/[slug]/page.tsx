@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getProblem, problems } from "@/data/dsa";
+import { getProblem, problems, visibleStarters } from "@/data/dsa";
 import { ProblemDetailLayout } from "@/components/dsa/problem-detail-layout";
 import { ProblemInfoTabs } from "@/components/dsa/problem-info-tabs";
 import {
@@ -35,6 +35,7 @@ export default async function ProblemPage({
 
   const info = (
     <ProblemInfoTabs
+      slug={problem.slug}
       description={
         <ProblemDescription
           slug={problem.slug}
@@ -59,7 +60,14 @@ export default async function ProblemPage({
     />
   );
 
-  const workspace = <EditorWorkspace slug={problem.slug} starterCode={problem.starterCode} />;
+  const workspace = (
+    <EditorWorkspace
+      slug={problem.slug}
+      title={problem.title}
+      difficulty={problem.difficulty}
+      starterCode={visibleStarters(problem)}
+    />
+  );
 
   return <ProblemDetailLayout info={info} workspace={workspace} />;
 }

@@ -6,8 +6,10 @@ import {
   topics,
   type Difficulty,
 } from "@/data/dsa";
+import { dailyCatalog } from "@/data/daily";
 import { PageHeader } from "@/components/design-system/page-header";
 import { EmptyState } from "@/components/design-system/empty-state";
+import { DailyProblemCard } from "@/components/marketing/daily-problem";
 import { DsaProgress } from "@/components/dsa/dsa-progress";
 import { ProblemFilters } from "@/components/dsa/problem-filters";
 import { ProblemList } from "@/components/dsa/problem-list";
@@ -55,6 +57,8 @@ export default async function DsaPage({
         title="DSA Problems"
         description={`${problems.length} problems · master the patterns that show up in every interview.`}
       />
+
+      <DailyProblemCard problems={dailyCatalog} />
 
       <DsaProgress problems={catalog} topics={topicMeta} />
 

@@ -66,6 +66,7 @@ export const DEFAULT_LANGUAGE = "python";
 /** Top-level product navigation (marketing + in-app). */
 export const PRODUCT_NAV = [
   { label: "DSA", href: "/dsa" },
+  { label: "Companies", href: "/companies" },
   { label: "System Design", href: "/system-design" },
   { label: "CS Fundamentals", href: "/cs" },
   { label: "Question Bank", href: "/questions" },

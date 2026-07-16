@@ -1,4 +1,4 @@
-import { getProblem, type TestCase } from "@/data/dsa";
+import { assembleSource, getProblem, type TestCase } from "@/data/dsa";
 import { runCode, runTestCase, type TestOutcome } from "@/lib/execution";
 
 /** Cap on how many test cases we execute per submit (rate-limit friendly). */
@@ -39,8 +39,13 @@ export async function runSamples(params: {
 }): Promise<RunResult> {
   const { slug, language, code, customInput } = params;
 
+  // The editor only holds the solution function; wrap it with the hidden
+  // stdin/stdout driver before executing.
+  const problem = getProblem(slug);
+  const source = problem ? assembleSource(problem, language, code) : code;
+
   if (typeof customInput === "string" && customInput.length > 0) {
-    const r = await runCode({ languageId: language, source: code, stdin: customInput });
+    const r = await runCode({ languageId: language, source, stdin: customInput });
     return {
       kind: "custom",
       stdout: r.stdout,
@@ -51,12 +56,12 @@ export async function runSamples(params: {
     };
   }
 
-  const samples = getProblem(slug)?.testCases.filter((tc) => tc.isSample) ?? [];
+  const samples = problem?.testCases.filter((tc) => tc.isSample) ?? [];
 
   const results: TestOutcome[] = [];
   for (const tc of samples) {
     results.push(
-      await runTestCase(language, code, {
+      await runTestCase(language, source, {
         input: tc.input,
         expectedOutput: tc.expectedOutput,
       })
@@ -78,8 +83,11 @@ export async function submitSolution(params: {
 }): Promise<SubmitResult> {
   const { slug, language, code } = params;
 
+  const problem = getProblem(slug);
+  const source = problem ? assembleSource(problem, language, code) : code;
+
   // Samples first so failures surface on the cases the learner can see.
-  const all = getProblem(slug)?.testCases ?? [];
+  const all = problem?.testCases ?? [];
   const testCases: TestCase[] = [
     ...all.filter((tc) => tc.isSample),
     ...all.filter((tc) => !tc.isSample),
@@ -92,7 +100,7 @@ export async function submitSolution(params: {
   let message: string | undefined;
 
   for (const tc of testCases) {
-    const outcome = await runTestCase(language, code, {
+    const outcome = await runTestCase(language, source, {
       input: tc.input,
       expectedOutput: tc.expectedOutput,
     });

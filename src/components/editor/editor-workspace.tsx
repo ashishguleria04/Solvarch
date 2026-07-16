@@ -21,9 +21,12 @@ import {
 } from "@/components/ui/select";
 import { CodeEditor } from "@/components/editor/code-editor";
 import { OutputDiff } from "@/components/editor/output-diff";
+import { PracticeTimer } from "@/components/practice/practice-timer";
 import { LANGUAGES, DEFAULT_LANGUAGE, getLanguage } from "@/lib/constants";
 import { saveCodeDraft, useCodeDraft } from "@/lib/code-storage";
+import { useActivePractice } from "@/lib/practice";
 import { recordAttempt, recordSolved } from "@/lib/progress";
+import type { Difficulty } from "@/data/dsa";
 import { cn } from "@/lib/utils";
 
 type StarterCode = Record<string, string>;
@@ -63,10 +66,14 @@ const VERDICT_LABEL: Record<string, string> = {
 
 export function EditorWorkspace({
   slug,
+  title,
+  difficulty,
   starterCode,
   onSolved,
 }: {
   slug: string;
+  title: string;
+  difficulty: Difficulty;
   starterCode: StarterCode;
   onSolved?: () => void;
 }) {
@@ -79,6 +86,12 @@ export function EditorWorkspace({
   const [submitting, setSubmitting] = useState(false);
   const [run, setRun] = useState<RunResult | null>(null);
   const [submit, setSubmit] = useState<SubmitResult | null>(null);
+
+  // Timed self-practice: while a session is live on this problem, the judge
+  // is off-limits — no Run, no Submit, no lingering results (cleared when the
+  // session starts, via PracticeTimer's onStart).
+  const practice = useActivePractice();
+  const inPractice = practice?.slug === slug;
 
   const language =
     chosenLanguage ??
@@ -192,17 +205,30 @@ export function EditorWorkspace({
         </Select>
 
         <div className="ml-auto flex items-center gap-2">
+          <PracticeTimer
+            slug={slug}
+            title={title}
+            difficulty={difficulty}
+            onStart={() => {
+              setRun(null);
+              setSubmit(null);
+            }}
+          />
           <Button variant="ghost" size="icon-sm" onClick={reset} title="Reset code">
             <RotateCcw className="size-4" />
           </Button>
-          <Button variant="outline" size="sm" onClick={handleRun} disabled={busy}>
-            {running ? <Loader2 className="size-4 animate-spin" /> : <Play className="size-4" />}
-            Run
-          </Button>
-          <Button variant="glow" size="sm" onClick={handleSubmit} disabled={busy}>
-            {submitting ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
-            Submit
-          </Button>
+          {!inPractice && (
+            <>
+              <Button variant="outline" size="sm" onClick={handleRun} disabled={busy}>
+                {running ? <Loader2 className="size-4 animate-spin" /> : <Play className="size-4" />}
+                Run
+              </Button>
+              <Button variant="glow" size="sm" onClick={handleSubmit} disabled={busy}>
+                {submitting ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+                Submit
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
@@ -213,7 +239,15 @@ export function EditorWorkspace({
 
       {/* Results */}
       <div className="h-56 overflow-y-auto border-t border-border bg-card/30 p-3 scrollbar-thin">
-        <ResultsPanel run={run} submit={submit} busy={busy} />
+        {inPractice ? (
+          <p className="text-sm text-muted-foreground">
+            Timed practice is running — no runs, no verdicts, just you and the
+            clock. End the session to unlock Run &amp; Submit and score
+            yourself.
+          </p>
+        ) : (
+          <ResultsPanel run={run} submit={submit} busy={busy} />
+        )}
       </div>
     </div>
   );

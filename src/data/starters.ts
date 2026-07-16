@@ -1,5 +1,8 @@
 // Starter-code generator: produces correct stdin/stdout plumbing for the four
-// languages so learners only fill in a `solve(...)` function. Output formats are
+// languages so learners only fill in a `solve(...)` function. The plumbing is
+// split into a hidden driver (prefix/suffix) and a visible snippet — the editor
+// shows only the solution function; the judge stitches the driver back around
+// it before execution (see StarterSnippet in ./types). Output formats are
 // standardized (booleans -> "true"/"false", int arrays -> space-separated) so
 // they match the reference-generated expected outputs.
 //
@@ -7,6 +10,8 @@
 // language. Trees are given in level-order with `null` for missing children.
 // "sorted*" out types canonicalize order-insensitive answers by sorting the
 // printed rows lexicographically — the learner can return rows in any order.
+
+import type { StarterBundle, StarterSnippet } from "./types";
 
 export type InShape =
   | "intArray" // line: ints -> nums
@@ -345,12 +350,23 @@ function serializeTree(root) {
 }
 `;
 
-const JAVA_LIST_HELPERS = `
-    static class ListNode {
-        int val; ListNode next;
-        ListNode(int val) { this.val = val; }
-    }
+// Node classes are top-level (not nested in Main) so the learner's Solution
+// class can reference them directly.
+const JAVA_LISTNODE_CLASS = `class ListNode {
+    int val;
+    ListNode next;
+    ListNode(int val) { this.val = val; }
+}
+`;
 
+const JAVA_TREENODE_CLASS = `class TreeNode {
+    int val;
+    TreeNode left, right;
+    TreeNode(int val) { this.val = val; }
+}
+`;
+
+const JAVA_LIST_HELPERS = `
     static ListNode buildList(String line) {
         ListNode dummy = new ListNode(0), cur = dummy;
         if (line != null && !line.trim().isEmpty()) {
@@ -374,11 +390,6 @@ const JAVA_LIST_HELPERS = `
 `;
 
 const JAVA_TREE_HELPERS = `
-    static class TreeNode {
-        int val; TreeNode left, right;
-        TreeNode(int val) { this.val = val; }
-    }
-
     static TreeNode buildTree(String line) {
         if (line == null || line.trim().isEmpty()) return null;
         String[] toks = line.trim().split("\\\\s+");
@@ -698,7 +709,7 @@ function javaReader(shape: InShape): string {
   }
 }
 function javaPrinter(out: OutType, callArgs: string, fnName: string): string {
-  const call = `${RET_JAVA[out]} res = ${fnName}(${callArgs});`;
+  const call = `${RET_JAVA[out]} res = new Solution().${fnName}(${callArgs});`;
   switch (out) {
     case "bool":
       return `        ${call}\n        System.out.println(res ? "true" : "false");`;
@@ -810,25 +821,51 @@ function callArgsFor(shape: InShape): string {
   return PARAMS[shape].py; // param *names* are identical across langs
 }
 
+/** Short "what you get" note at the top of the visible snippet. */
+function visibleHeader(
+  comment: string,
+  needsList: boolean,
+  needsTree: boolean,
+  listNote: string,
+  treeNote: string
+): string {
+  const lines = [
+    `${comment} Input parsing and output printing are handled for you —`,
+    `${comment} just implement this function and return the result.`,
+  ];
+  if (needsList) lines.push(listNote);
+  if (needsTree) lines.push(treeNote);
+  return lines.join("\n") + "\n";
+}
+
 export function buildStarter(
   shape: InShape,
   out: OutType,
   fnName: string
-): { python: string; javascript: string; java: string; cpp: string } {
+): StarterBundle {
   const args = callArgsFor(shape);
   const needsList = LIST_SHAPES.includes(shape) || out === "list";
   const needsTree = TREE_SHAPES.includes(shape) || out === "tree";
 
+  // ---- Python ----
   const pyImports =
     needsTree ? "import sys\nfrom collections import deque\n" : "import sys\n";
   const pyHelpers =
     (needsList ? PY_LIST_HELPERS + "\n" : "") + (needsTree ? PY_TREE_HELPERS + "\n" : "");
 
-  const python = `${pyImports}
-${pyHelpers}def ${fnName}(${PARAMS[shape].py}):
+  const python: StarterSnippet = {
+    prefix: `${pyImports}\n${pyHelpers}`,
+    visible: `${visibleHeader(
+      "#",
+      needsList,
+      needsTree,
+      "# A ListNode class (fields: val, next) is available.",
+      "# A TreeNode class (fields: val, left, right) is available."
+    )}def ${fnName}(${PARAMS[shape].py}):
     # Write your solution here
     pass
-
+`,
+    suffix: `
 def main():
     data = sys.stdin.read().split('\\n')
 ${pyReader(shape)}
@@ -836,15 +873,26 @@ ${pyReader(shape)}
 ${pyPrinter(out)}
 
 main()
-`;
+`,
+  };
 
+  // ---- JavaScript ----
   const jsHelpers =
     (needsList ? JS_LIST_HELPERS + "\n" : "") + (needsTree ? JS_TREE_HELPERS + "\n" : "");
 
-  const javascript = `${jsHelpers}function ${fnName}(${PARAMS[shape].js}) {
+  const javascript: StarterSnippet = {
+    prefix: jsHelpers,
+    visible: `${visibleHeader(
+      "//",
+      needsList,
+      needsTree,
+      "// A ListNode class (fields: val, next) is available.",
+      "// A TreeNode class (fields: val, left, right) is available."
+    )}function ${fnName}(${PARAMS[shape].js}) {
   // Write your solution here
 }
-
+`,
+    suffix: `
 function main() {
   const data = require('fs').readFileSync(0, 'utf8').split('\\n');
 ${jsReader(shape)}
@@ -853,8 +901,10 @@ ${jsPrinter(out)}
 }
 
 main();
-`;
+`,
+  };
 
+  // ---- Java ----
   const needsParseInts = /parseInts/.test(javaReader(shape));
   const javaParseHelper = needsParseInts
     ? `\n    static int[] parseInts(String line) {\n        if (line == null || line.trim().isEmpty()) return new int[]{};\n        String[] p = line.trim().split("\\\\s+");\n        int[] a = new int[p.length];\n        for (int i = 0; i < p.length; i++) a[i] = Integer.parseInt(p[i]);\n        return a;\n    }\n`
@@ -863,15 +913,27 @@ main();
     javaParseHelper +
     (needsList ? JAVA_LIST_HELPERS : "") +
     (needsTree ? JAVA_TREE_HELPERS : "");
+  const javaNodeClasses =
+    (needsList ? JAVA_LISTNODE_CLASS + "\n" : "") +
+    (needsTree ? JAVA_TREENODE_CLASS + "\n" : "");
 
-  const java = `import java.util.*;
-import java.io.*;
-
-public class Main {
-    static ${RET_JAVA[out]} ${fnName}(${PARAMS[shape].java}) {
+  const java: StarterSnippet = {
+    prefix: `import java.util.*;\nimport java.io.*;\n\n${javaNodeClasses}`,
+    visible: `${visibleHeader(
+      "//",
+      needsList,
+      needsTree,
+      "// A ListNode class (fields: val, next) is available.",
+      "// A TreeNode class (fields: val, left, right) is available."
+    )}class Solution {
+    ${RET_JAVA[out]} ${fnName}(${PARAMS[shape].java}) {
         // Write your solution here
         return ${RET_DEFAULT_JAVA[out]};
     }
+}
+`,
+    suffix: `
+public class Main {
 ${javaHelper}
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -879,8 +941,10 @@ ${javaReader(shape)}
 ${javaPrinter(out, args, fnName)}
     }
 }
-`;
+`,
+  };
 
+  // ---- C++ ----
   const needsCppParse = /parseInts/.test(cppReader(shape));
   const cppParseHelper = needsCppParse
     ? `vector<int> parseInts(const string& line) {\n    vector<int> v; stringstream ss(line); int x;\n    while (ss >> x) v.push_back(x);\n    return v;\n}\n\n`
@@ -890,20 +954,27 @@ ${javaPrinter(out, args, fnName)}
     (needsList ? CPP_LIST_HELPERS : "") +
     (needsTree ? CPP_TREE_HELPERS : "");
 
-  const cpp = `#include <bits/stdc++.h>
-using namespace std;
-
-${cppHelper}${RET_CPP[out]} ${fnName}(${PARAMS[shape].cpp}) {
+  const cpp: StarterSnippet = {
+    prefix: `#include <bits/stdc++.h>\nusing namespace std;\n\n${cppHelper}`,
+    visible: `${visibleHeader(
+      "//",
+      needsList,
+      needsTree,
+      "// struct ListNode { int val; ListNode* next; } is available.",
+      "// struct TreeNode { int val; TreeNode *left, *right; } is available."
+    )}${RET_CPP[out]} ${fnName}(${PARAMS[shape].cpp}) {
     // Write your solution here
     return ${RET_DEFAULT_CPP[out]};
 }
-
+`,
+    suffix: `
 int main() {
 ${cppReader(shape)}
 ${cppPrinter(out, args, fnName)}
     return 0;
 }
-`;
+`,
+  };
 
   return { python, javascript, java, cpp };
 }

@@ -8,7 +8,10 @@
 import { useSyncExternalStore } from "react";
 import { z } from "zod";
 
-const KEY_PREFIX = "solvarch.code.v1:";
+// v2: starters became solution-function-only (the stdin/stdout driver is
+// hidden and re-attached at run time), so v1 full-program drafts no longer
+// compose with the judge and are intentionally orphaned.
+const KEY_PREFIX = "solvarch.code.v2:";
 
 const draftSchema = z.object({
   /** language id → edited source (only where it differs from starter). */

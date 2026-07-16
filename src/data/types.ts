@@ -18,6 +18,24 @@ export type SeedTest = {
   sample?: boolean;
 };
 
+/**
+ * Starter code for one language, split so the learner only ever sees the
+ * solution function. The hidden stdin/stdout driver is stitched back around
+ * their code at run/submit time: full source = prefix + visible + suffix.
+ */
+export type StarterSnippet = {
+  /** What the learner sees and edits — just the solution function. */
+  visible: string;
+  /** Hidden driver above the visible code (imports, node classes, helpers). */
+  prefix: string;
+  /** Hidden driver below the visible code (main: parse stdin, call, print). */
+  suffix: string;
+};
+
+export type StarterLanguage = "python" | "javascript" | "java" | "cpp";
+
+export type StarterBundle = Record<StarterLanguage, StarterSnippet>;
+
 export type SeedProblem = {
   slug: string;
   title: string;
@@ -33,7 +51,7 @@ export type SeedProblem = {
   complexitySpace?: string;
   youtubeUrl?: string;
   tags: string[];
-  starterCode: { python: string; javascript: string; java: string; cpp: string };
+  starterCode: StarterBundle;
   /** Correct solution over raw stdin -> exact expected stdout. Runs at seed time. */
   reference: (input: string) => string;
   tests: SeedTest[];

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Building2,
   Code2,
   Network,
   Cpu,
@@ -15,6 +16,7 @@ type NavItem = { label: string; href: string; icon: LucideIcon };
 
 export const APP_NAV: NavItem[] = [
   { label: "DSA Problems", href: "/dsa", icon: Code2 },
+  { label: "Companies", href: "/companies", icon: Building2 },
   { label: "System Design", href: "/system-design", icon: Network },
   { label: "CS Fundamentals", href: "/cs", icon: Cpu },
   { label: "Question Bank", href: "/questions", icon: MessagesSquare },
