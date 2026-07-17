@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { problems } from "@/data/dsa";
-import { REVIEW_INTERVALS_DAYS } from "@/lib/review";
+import { REVIEW_INTERVALS_DAYS } from "@/lib/review-schedule";
 import { PageHeader } from "@/components/design-system/page-header";
 import {
   ReviewQueue,

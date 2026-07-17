@@ -9,12 +9,12 @@
 
 import { useSyncExternalStore } from "react";
 import { z } from "zod";
+import { REVIEW_INTERVALS_DAYS } from "@/lib/review-schedule";
+
+export { REVIEW_INTERVALS_DAYS };
 
 const STORAGE_KEY = "solvarch.review.v1";
 const CHANGE_EVENT = "solvarch:review-change";
-
-/** The interval ladder, in days. Rung i's next review is INTERVALS[i] away. */
-export const REVIEW_INTERVALS_DAYS = [1, 3, 7, 14, 30] as const;
 
 const reviewEntrySchema = z.object({
   /** When the problem was first marked as failed. */
