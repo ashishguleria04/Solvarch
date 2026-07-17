@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Menu } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/sheet";
 import { Logo } from "@/components/design-system/logo";
 import { SidebarNav } from "@/components/app/app-nav";
+import { openCommandPalette } from "@/components/app/command-palette";
+import { ThemeToggle } from "@/components/app/theme-toggle";
 
 export function AppTopbar() {
   const [open, setOpen] = useState(false);
@@ -38,6 +40,21 @@ export function AppTopbar() {
 
       <div className="lg:hidden">
         <Logo href="/dsa" showText={false} />
+      </div>
+
+      <div className="ml-auto flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={openCommandPalette}
+          aria-label="Search (Ctrl+K)"
+          className="lg:hidden"
+        >
+          <Search className="size-4.5" />
+        </Button>
+        <div className="lg:hidden">
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

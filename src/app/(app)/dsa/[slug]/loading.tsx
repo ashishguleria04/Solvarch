@@ -22,7 +22,7 @@ export default function ProblemLoading() {
           ))}
         </div>
       </div>
-      <div className="hidden bg-[#0b0b11] p-6 lg:block">
+      <div className="hidden bg-code p-6 lg:block">
         <div className="h-8 w-40 animate-pulse rounded-lg bg-card" />
         <div className="mt-4 space-y-2">
           {Array.from({ length: 12 }).map((_, i) => (

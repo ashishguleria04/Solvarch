@@ -37,7 +37,7 @@ function DiffColumn({
       <div
         className={cn(
           "border-b border-border px-2.5 py-1.5 font-sans text-[11px] font-medium uppercase tracking-wide",
-          side === "expected" ? "text-emerald-400" : "text-rose-400"
+          side === "expected" ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
         )}
       >
         {title}
@@ -52,8 +52,8 @@ function DiffColumn({
                 "flex min-h-5 whitespace-pre px-2.5 leading-5",
                 !line.same &&
                   (side === "expected"
-                    ? "bg-emerald-500/10 text-emerald-200"
-                    : "bg-rose-500/10 text-rose-200"),
+                    ? "bg-emerald-500/10 text-emerald-800 dark:text-emerald-200"
+                    : "bg-rose-500/10 text-rose-800 dark:text-rose-200"),
                 line.same && "text-foreground/70"
               )}
             >
@@ -88,7 +88,7 @@ export function OutputDiff({
   return (
     <div
       className={cn(
-        "grid grid-cols-2 divide-x divide-border overflow-hidden rounded-lg border border-border bg-[#0b0b11] font-mono text-xs",
+        "grid grid-cols-2 divide-x divide-border overflow-hidden rounded-lg border border-border bg-code font-mono text-xs",
         className
       )}
     >

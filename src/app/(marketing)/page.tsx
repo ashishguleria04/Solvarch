@@ -70,11 +70,11 @@ const features = [
 ];
 
 const codeLines = [
-  { t: "def two_sum(nums, target):", c: "text-sky-300" },
+  { t: "def two_sum(nums, target):", c: "text-sky-700 dark:text-sky-300" },
   { t: "    seen = {}", c: "text-foreground/80" },
   { t: "    for i, n in enumerate(nums):", c: "text-foreground/80" },
   { t: "        if target - n in seen:", c: "text-foreground/80" },
-  { t: "            return [seen[target - n], i]", c: "text-emerald-300" },
+  { t: "            return [seen[target - n], i]", c: "text-emerald-700 dark:text-emerald-300" },
   { t: "        seen[n] = i", c: "text-foreground/80" },
 ];
 
@@ -131,7 +131,7 @@ export default function LandingPage() {
                   <span className="ml-2 font-mono text-xs text-muted-foreground">
                     two_sum.py
                   </span>
-                  <span className="ml-auto rounded-md bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
+                  <span className="ml-auto rounded-md bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] text-emerald-600 dark:text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
                     Accepted
                   </span>
                 </div>

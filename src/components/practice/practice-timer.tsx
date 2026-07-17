@@ -39,7 +39,7 @@ function LiveClock({ endsAt }: { endsAt: string }) {
     <span
       className={cn(
         "font-mono text-sm font-semibold tabular-nums",
-        remaining <= 60 ? "text-rose-400" : "text-foreground"
+        remaining <= 60 ? "text-rose-600 dark:text-rose-400" : "text-foreground"
       )}
       title="Time remaining"
     >

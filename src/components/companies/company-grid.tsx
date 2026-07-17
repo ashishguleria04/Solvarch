@@ -72,7 +72,7 @@ export function CompanyGrid({ companies }: { companies: CompanySummary[] }) {
               <span
                 className={cn(
                   "font-medium",
-                  done ? "text-emerald-400" : "text-muted-foreground"
+                  done ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"
                 )}
               >
                 {solved}/{company.dsaCount} solved

@@ -110,7 +110,7 @@ export function DailyProblemCard({
               className={cn(
                 "text-sm font-medium",
                 solvedCount === picks.length
-                  ? "text-emerald-400"
+                  ? "text-emerald-600 dark:text-emerald-400"
                   : "text-muted-foreground"
               )}
             >
@@ -121,7 +121,7 @@ export function DailyProblemCard({
             <Flame
               className={cn(
                 "size-5",
-                streak.solvedToday ? "text-amber-400" : "text-muted-foreground/40"
+                streak.solvedToday ? "text-amber-600 dark:text-amber-400" : "text-muted-foreground/40"
               )}
             />
             <span className="text-sm font-semibold">{streak.current}</span>
@@ -148,7 +148,7 @@ export function DailyProblemCard({
                     {pick.topicName}
                   </span>
                   {solved && (
-                    <CheckCircle2 className="size-4 text-emerald-400" aria-label="Solved" />
+                    <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" aria-label="Solved" />
                   )}
                   <span className="ml-auto flex items-center gap-2">
                     <span className="hidden flex-wrap gap-1.5 sm:flex">

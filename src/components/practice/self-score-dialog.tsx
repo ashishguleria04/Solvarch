@@ -124,7 +124,7 @@ export function SelfScoreDialog() {
         <div className="text-sm font-medium">
           Score:{" "}
           <span
-            className={checks.size >= 5 ? "text-emerald-400" : "text-amber-400"}
+            className={checks.size >= 5 ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"}
           >
             {checks.size}/{RUBRIC.length}
           </span>

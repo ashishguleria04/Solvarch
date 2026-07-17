@@ -278,7 +278,7 @@ function Verdict({ result }: { result: SubmitResult }) {
       <div
         className={cn(
           "flex items-center gap-2 text-lg font-semibold",
-          accepted ? "text-emerald-400" : "text-rose-400"
+          accepted ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
         )}
       >
         {accepted ? <CheckCircle2 className="size-5" /> : <XCircle className="size-5" />}
@@ -322,9 +322,9 @@ function FailRow({
       <div className="text-muted-foreground">{label}:</div>
       <pre
         className={cn(
-          "mt-0.5 overflow-x-auto whitespace-pre-wrap rounded bg-[#0b0b11] p-2 scrollbar-thin",
-          tone === "ok" && "text-emerald-300",
-          tone === "bad" && "text-rose-300"
+          "mt-0.5 overflow-x-auto whitespace-pre-wrap rounded bg-code p-2 scrollbar-thin",
+          tone === "ok" && "text-emerald-700 dark:text-emerald-300",
+          tone === "bad" && "text-rose-700 dark:text-rose-300"
         )}
       >
         {value}
@@ -361,7 +361,7 @@ function ResultsPanel({
           <pre className="mt-1 whitespace-pre-wrap text-foreground/90">
             {run.stdout || "(no output)"}
           </pre>
-          {run.stderr && <pre className="mt-2 whitespace-pre-wrap text-rose-300">{run.stderr}</pre>}
+          {run.stderr && <pre className="mt-2 whitespace-pre-wrap text-rose-700 dark:text-rose-300">{run.stderr}</pre>}
         </div>
       );
     }
@@ -374,11 +374,11 @@ function ResultsPanel({
           <div key={i} className="rounded-lg border border-border bg-card/50 p-2.5 font-mono text-xs">
             <div className="mb-1 flex items-center gap-1.5">
               {r.passed ? (
-                <CheckCircle2 className="size-3.5 text-emerald-400" />
+                <CheckCircle2 className="size-3.5 text-emerald-600 dark:text-emerald-400" />
               ) : r.status === "error" ? (
-                <AlertTriangle className="size-3.5 text-amber-400" />
+                <AlertTriangle className="size-3.5 text-amber-600 dark:text-amber-400" />
               ) : (
-                <XCircle className="size-3.5 text-rose-400" />
+                <XCircle className="size-3.5 text-rose-600 dark:text-rose-400" />
               )}
               <span className="font-sans font-medium">Case {i + 1}</span>
             </div>
@@ -386,11 +386,11 @@ function ResultsPanel({
             {r.passed || r.message ? (
               <>
                 <div className="text-muted-foreground">
-                  Expected: <span className="text-emerald-300">{r.expected}</span>
+                  Expected: <span className="text-emerald-700 dark:text-emerald-300">{r.expected}</span>
                 </div>
                 <div className="text-muted-foreground">
                   Got:{" "}
-                  <span className={r.passed ? "text-emerald-300" : "text-rose-300"}>
+                  <span className={r.passed ? "text-emerald-700 dark:text-emerald-300" : "text-rose-700 dark:text-rose-300"}>
                     {r.message ? r.message : r.stdout.trim() || "(no output)"}
                   </span>
                 </div>
@@ -399,7 +399,7 @@ function ResultsPanel({
               <OutputDiff expected={r.expected} actual={r.stdout} className="mt-1.5" />
             )}
             {!r.passed && r.stderr && (
-              <pre className="mt-1.5 overflow-x-auto whitespace-pre-wrap text-rose-300 scrollbar-thin">
+              <pre className="mt-1.5 overflow-x-auto whitespace-pre-wrap text-rose-700 dark:text-rose-300 scrollbar-thin">
                 {r.stderr}
               </pre>
             )}

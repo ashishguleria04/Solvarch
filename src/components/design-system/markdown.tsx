@@ -69,7 +69,7 @@ const components: Components = {
     const mermaid = mermaidSource(children);
     if (mermaid !== null) return <MermaidDiagram chart={mermaid} />;
     return (
-      <pre className="my-4 overflow-x-auto rounded-lg border border-border bg-[#0b0b11] p-4 text-sm leading-relaxed scrollbar-thin">
+      <pre className="my-4 overflow-x-auto rounded-lg border border-border bg-code p-4 text-sm leading-relaxed scrollbar-thin">
         {children}
       </pre>
     );

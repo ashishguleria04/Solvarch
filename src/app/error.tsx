@@ -17,7 +17,7 @@ export default function GlobalError({
 
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-6 text-center">
-      <div className="flex size-12 items-center justify-center rounded-xl bg-red-500/10 text-red-400 ring-1 ring-inset ring-red-500/20">
+      <div className="flex size-12 items-center justify-center rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 ring-1 ring-inset ring-red-500/20">
         <AlertTriangle className="size-5" />
       </div>
       <h1 className="text-lg font-semibold tracking-tight">Something broke</h1>

@@ -31,7 +31,7 @@ export function RoadmapCompletion({
     <span
       className={cn(
         "inline-flex items-center gap-1.5 text-xs text-muted-foreground",
-        complete && "text-emerald-400",
+        complete && "text-emerald-600 dark:text-emerald-400",
         className
       )}
     >
@@ -54,7 +54,7 @@ export function RoadmapCompletion({
           strokeDasharray={`${circumference * pct} ${circumference}`}
           className={cn(
             "transition-[stroke-dasharray] duration-500",
-            complete ? "stroke-emerald-400" : "stroke-primary"
+            complete ? "stroke-emerald-500 dark:stroke-emerald-400" : "stroke-primary"
           )}
         />
       </svg>

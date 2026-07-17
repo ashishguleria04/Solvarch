@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import {
+  BarChart3,
   BookOpen,
   Building2,
   Code2,
@@ -21,6 +22,7 @@ type NavItem = { label: string; href: string; icon: LucideIcon };
 
 export const APP_NAV: NavItem[] = [
   { label: "DSA Problems", href: "/dsa", icon: Code2 },
+  { label: "Progress", href: "/progress", icon: BarChart3 },
   { label: "Roadmaps", href: "/roadmaps", icon: Map },
   { label: "Review", href: "/review", icon: RotateCcw },
   { label: "Cheat Sheets", href: "/cheatsheets", icon: BookOpen },
@@ -63,7 +65,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         {item.label}
         {item.href === "/review" && due > 0 && (
           <span
-            className="ml-auto rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium text-amber-400"
+            className="ml-auto rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium text-amber-600 dark:text-amber-400"
             aria-label={`${due} reviews due`}
           >
             {due}

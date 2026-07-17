@@ -72,13 +72,13 @@ export function ProblemDescription({
               <div className="space-y-2 font-mono text-sm">
                 <div>
                   <span className="text-muted-foreground">Input:</span>
-                  <pre className="mt-1 overflow-x-auto whitespace-pre-wrap rounded bg-[#0b0b11] p-2 text-foreground/90 scrollbar-thin">
+                  <pre className="mt-1 overflow-x-auto whitespace-pre-wrap rounded bg-code p-2 text-foreground/90 scrollbar-thin">
                     {ex.input}
                   </pre>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Output:</span>
-                  <pre className="mt-1 overflow-x-auto whitespace-pre-wrap rounded bg-[#0b0b11] p-2 text-emerald-300 scrollbar-thin">
+                  <pre className="mt-1 overflow-x-auto whitespace-pre-wrap rounded bg-code p-2 text-emerald-700 dark:text-emerald-300 scrollbar-thin">
                     {ex.output}
                   </pre>
                 </div>
@@ -107,7 +107,7 @@ export function ProblemDescription({
           rel="noreferrer"
           className="mt-6 inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium transition-colors hover:border-primary/40 hover:text-primary"
         >
-          <Video className="size-4 text-rose-400" />
+          <Video className="size-4 text-rose-600 dark:text-rose-400" />
           Watch a video walkthrough
         </a>
       )}

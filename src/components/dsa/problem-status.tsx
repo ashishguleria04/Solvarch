@@ -19,7 +19,7 @@ export function ProblemStatusIcon({
     return (
       <CheckCircle2
         aria-label="Solved"
-        className={cn("size-4 shrink-0 text-emerald-400", className)}
+        className={cn("size-4 shrink-0 text-emerald-600 dark:text-emerald-400", className)}
       />
     );
   }
@@ -27,7 +27,7 @@ export function ProblemStatusIcon({
     return (
       <CircleDot
         aria-label="Attempted"
-        className={cn("size-4 shrink-0 text-amber-400", className)}
+        className={cn("size-4 shrink-0 text-amber-600 dark:text-amber-400", className)}
       />
     );
   }
@@ -45,7 +45,7 @@ export function SolvedBadge({ slug }: { slug: string }) {
   if (problemStatus(progress, slug) !== "solved") return null;
 
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
+    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
       <CheckCircle2 className="size-3.5" />
       Solved
     </span>

@@ -29,7 +29,7 @@ export function ContentCheckIcon({
     return (
       <CheckCircle2
         aria-label="Completed"
-        className={cn("size-4 shrink-0 text-emerald-400", className)}
+        className={cn("size-4 shrink-0 text-emerald-600 dark:text-emerald-400", className)}
       />
     );
   }
@@ -56,7 +56,7 @@ export function MarkCompleteButton({ contentKey }: { contentKey: string }) {
           nowDone ? "Marked as completed." : "Marked as not completed."
         );
       }}
-      className={cn(done && "border-emerald-500/40 text-emerald-400")}
+      className={cn(done && "border-emerald-500/40 text-emerald-600 dark:text-emerald-400")}
     >
       <CheckCircle2 className="size-4" />
       {done ? "Completed" : "Mark as complete"}
@@ -82,7 +82,7 @@ export function ContentProgressSummary({
     <span
       className={cn(
         "inline-flex items-center gap-1.5 text-xs text-muted-foreground",
-        done === keys.length && keys.length > 0 && "text-emerald-400",
+        done === keys.length && keys.length > 0 && "text-emerald-600 dark:text-emerald-400",
         className
       )}
     >
@@ -106,7 +106,7 @@ export function ContentProgressSummary({
           className={cn(
             "transition-[stroke-dasharray] duration-500",
             done === keys.length && keys.length > 0
-              ? "stroke-emerald-400"
+              ? "stroke-emerald-500 dark:stroke-emerald-400"
               : "stroke-primary"
           )}
         />

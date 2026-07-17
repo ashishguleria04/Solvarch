@@ -1,34 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
 import Link from "next/link";
-import { Download, Flame, MoreVertical, Trash2, Upload } from "lucide-react";
-import { toast } from "sonner";
+import { Flame } from "lucide-react";
 import type { Difficulty } from "@/data/dsa";
-import {
-  computeStreak,
-  exportFileName,
-  importProgress,
-  resetProgress,
-  serializeProgress,
-  useProgress,
-} from "@/lib/progress";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { computeStreak, useProgress } from "@/lib/progress";
+import { ProgressMenu } from "@/components/dsa/progress-menu";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 
@@ -120,7 +96,7 @@ export function DsaProgress({
           <Flame
             className={cn(
               "size-8",
-              streak.solvedToday ? "text-amber-400" : "text-muted-foreground/40"
+              streak.solvedToday ? "text-amber-600 dark:text-amber-400" : "text-muted-foreground/40"
             )}
           />
           <div>
@@ -195,104 +171,5 @@ function CompletionRing({ solved, total }: { solved: number; total: number }) {
         {Math.round(pct * 100)}%
       </span>
     </div>
-  );
-}
-
-function ProgressMenu({ hasProgress }: { hasProgress: boolean }) {
-  const fileInput = useRef<HTMLInputElement>(null);
-  const [confirmReset, setConfirmReset] = useState(false);
-
-  function handleExport() {
-    const blob = new Blob([serializeProgress()], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = exportFileName();
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("Progress exported.");
-  }
-
-  async function handleImportFile(file: File) {
-    const result = importProgress(await file.text());
-    if (result.ok) {
-      toast.success(
-        `Progress imported — ${result.solved} problem${result.solved === 1 ? "" : "s"} solved.`
-      );
-    } else {
-      toast.error(result.error);
-    }
-  }
-
-  return (
-    <>
-      <input
-        ref={fileInput}
-        type="file"
-        accept="application/json,.json"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleImportFile(file);
-          e.target.value = "";
-        }}
-      />
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon-sm" aria-label="Progress options">
-            <MoreVertical className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onSelect={handleExport} disabled={!hasProgress}>
-            <Download className="size-4" />
-            Export progress
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => fileInput.current?.click()}>
-            <Upload className="size-4" />
-            Import progress
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            variant="destructive"
-            onSelect={() => setConfirmReset(true)}
-            disabled={!hasProgress}
-          >
-            <Trash2 className="size-4" />
-            Reset progress
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <Dialog open={confirmReset} onOpenChange={setConfirmReset}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Reset all progress?</DialogTitle>
-            <DialogDescription>
-              This clears every solved and attempted problem, your completed
-              reading marks, and your streak from this browser. Progress is
-              stored locally only, so this can&apos;t be undone — export a
-              backup first if you might want it back.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setConfirmReset(false)}>
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => {
-                resetProgress();
-                setConfirmReset(false);
-                toast.success("Progress reset.");
-              }}
-            >
-              Reset everything
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
   );
 }

@@ -76,7 +76,7 @@ function ReviewRow({
             step {Math.min(entry.stage + 1, REVIEW_INTERVALS_DAYS.length)}/
             {REVIEW_INTERVALS_DAYS.length}
           </span>
-          <span className={due ? "font-medium text-amber-400" : ""}>
+          <span className={due ? "font-medium text-amber-600 dark:text-amber-400" : ""}>
             {formatDueIn(entry.dueAt, now)}
           </span>
         </span>
@@ -87,7 +87,7 @@ function ReviewRow({
             <Button
               variant="outline"
               size="sm"
-              className="border-emerald-500/40 text-emerald-400 hover:text-emerald-300"
+              className="border-emerald-500/40 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
               onClick={() => handleGrade(slug, true)}
             >
               <CheckCircle2 className="size-4" />
@@ -96,7 +96,7 @@ function ReviewRow({
             <Button
               variant="outline"
               size="sm"
-              className="border-rose-500/40 text-rose-400 hover:text-rose-300"
+              className="border-rose-500/40 text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300"
               onClick={() => handleGrade(slug, false)}
             >
               <XCircle className="size-4" />
@@ -161,7 +161,7 @@ export function ReviewQueue({ catalog }: { catalog: ReviewCatalogProblem[] }) {
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             Due now
             {dueRows.length > 0 && (
-              <span className="ml-2 rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium normal-case tracking-normal text-amber-400">
+              <span className="ml-2 rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium normal-case tracking-normal text-amber-600 dark:text-amber-400">
                 {dueRows.length}
               </span>
             )}

@@ -3,9 +3,9 @@ import { cn } from "@/lib/utils";
 type Difficulty = "EASY" | "MEDIUM" | "HARD";
 
 const styles: Record<Difficulty, string> = {
-  EASY: "text-emerald-400 bg-emerald-500/10 ring-emerald-500/20",
-  MEDIUM: "text-amber-400 bg-amber-500/10 ring-amber-500/20",
-  HARD: "text-rose-400 bg-rose-500/10 ring-rose-500/20",
+  EASY: "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 ring-emerald-500/20",
+  MEDIUM: "text-amber-600 dark:text-amber-400 bg-amber-500/10 ring-amber-500/20",
+  HARD: "text-rose-600 dark:text-rose-400 bg-rose-500/10 ring-rose-500/20",
 };
 
 const labels: Record<Difficulty, string> = {

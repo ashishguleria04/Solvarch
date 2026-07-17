@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { Logo } from "@/components/design-system/logo";
+import { openCommandPalette } from "@/components/app/command-palette";
+import { ThemeToggle } from "@/components/app/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -36,13 +38,31 @@ export function SiteHeader() {
         </div>
 
         <div className="hidden items-center gap-2 md:flex">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={openCommandPalette}
+            aria-label="Search (Ctrl+K)"
+          >
+            <Search className="size-4.5" />
+          </Button>
+          <ThemeToggle />
           <Button asChild variant="glow" size="sm">
             <Link href="/dsa">Start solving</Link>
           </Button>
         </div>
 
         {/* Mobile */}
-        <div className="md:hidden">
+        <div className="flex items-center gap-1 md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={openCommandPalette}
+            aria-label="Search (Ctrl+K)"
+          >
+            <Search className="size-5" />
+          </Button>
+          <ThemeToggle />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" aria-label="Open menu">

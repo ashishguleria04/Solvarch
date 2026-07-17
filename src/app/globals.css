@@ -33,6 +33,8 @@
   --border: #e4e4e7;
   --input: #e4e4e7;
   --ring: #3b82f6;
+  /* Code/terminal surfaces (pre blocks, diff panes, editor gutter). */
+  --code: #f6f7f9;
 
   --chart-1: #3b82f6;
   --chart-2: #8b5cf6;
@@ -76,6 +78,7 @@
   --border: #20202a;
   --input: #24242e;
   --ring: #3b82f6;
+  --code: #0b0b11;
 
   --chart-1: #3b82f6;
   --chart-2: #8b5cf6;
@@ -117,6 +120,7 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-warning: var(--warning);
+  --color-code: var(--code);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -156,6 +160,12 @@
 @layer utilities {
   /* Accent gradient text for hero headings */
   .text-gradient {
+    background: linear-gradient(180deg, #0a0a0f 0%, #1e40af 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .dark .text-gradient {
     background: linear-gradient(180deg, #ffffff 0%, #a9c4ff 100%);
     -webkit-background-clip: text;
     background-clip: text;
@@ -179,9 +189,14 @@
   /* Radial grid/glow background for hero + auth pages */
   .bg-grid {
     background-image:
+      linear-gradient(to right, rgba(10, 10, 15, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(10, 10, 15, 0.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  .dark .bg-grid {
+    background-image:
       linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-    background-size: 44px 44px;
   }
   .bg-radial-glow {
     background:

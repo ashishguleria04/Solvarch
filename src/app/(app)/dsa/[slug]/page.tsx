@@ -8,6 +8,7 @@ import {
   ProblemEditorial,
 } from "@/components/dsa/problem-info";
 import { ProblemHints } from "@/components/dsa/problem-hints";
+import { ProblemNotes } from "@/components/dsa/problem-notes";
 import { EditorWorkspace } from "@/components/editor/editor-workspace";
 
 export function generateStaticParams() {
@@ -57,6 +58,7 @@ export default async function ProblemPage({
         />
       }
       hints={<ProblemHints hints={problem.hints} />}
+      notes={<ProblemNotes slug={problem.slug} />}
     />
   );
 
