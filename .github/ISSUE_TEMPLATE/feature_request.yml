@@ -1,0 +1,25 @@
+name: Feature request
+description: Suggest an improvement or a new capability for Solvarch.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What's the gap or friction you've hit? (Not required to have a fully-formed solution yet.)
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How would you approach it? Sketches, mockups, or references to similar features elsewhere are welcome.
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false

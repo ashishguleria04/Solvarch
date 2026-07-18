@@ -1,0 +1,56 @@
+name: New DSA problem proposal
+description: Propose (or claim) a specific problem to add to the catalog.
+title: "[Problem]: "
+labels: ["content", "dsa-problem"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this to propose a new problem, or to claim one from an existing "good first issue" before you start working on it — so two people don't duplicate effort. See [CONTRIBUTING.md](../../CONTRIBUTING.md#adding-a-dsa-problem) for the full how-to.
+  - type: input
+    id: title
+    attributes:
+      label: Problem title
+      placeholder: e.g. "Word Search II"
+    validations:
+      required: true
+  - type: dropdown
+    id: topic
+    attributes:
+      label: Topic
+      options:
+        - Arrays
+        - Strings
+        - Two Pointers
+        - Sliding Window
+        - Binary Search
+        - Stacks & Queues
+        - Linked Lists
+        - Trees
+        - Tries
+        - Heaps & Priority Queues
+        - Backtracking
+        - Graphs
+        - Greedy
+        - Dynamic Programming
+        - Bit Manipulation
+        - New topic (describe below)
+    validations:
+      required: true
+  - type: dropdown
+    id: difficulty
+    attributes:
+      label: Difficulty
+      options:
+        - Easy
+        - Medium
+        - Hard
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why this problem?
+      description: What pattern does it teach that isn't already well covered in this topic?
+    validations:
+      required: false
