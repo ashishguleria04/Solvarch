@@ -6,13 +6,13 @@ import {
   Code2,
   Command,
   Cpu,
-  Github,
   LayoutDashboard,
   Map,
   MessagesSquare,
   Network,
   RefreshCcw,
   Sparkles,
+  Star,
   Timer,
 } from "lucide-react";
 import { dailyCatalog } from "@/data/daily";
@@ -514,7 +514,7 @@ export default async function LandingPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Github className="size-4" />
+                      <Star className="size-4" />
                       Star on GitHub
                     </a>
                   </Button>
