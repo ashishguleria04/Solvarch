@@ -41,6 +41,7 @@ const DIFFICULTY_LABEL = { EASY: "Easy", MEDIUM: "Medium", HARD: "Hard" } as con
 const PAGES: SearchItem[] = [
   { title: "DSA Problems", path: "/dsa", group: "Pages" },
   { title: "Progress", path: "/progress", group: "Pages", keywords: "stats dashboard streak heatmap" },
+  { title: "Interview Plan", path: "/plan", group: "Pages", keywords: "countdown planner interview date pace schedule daily" },
   { title: "Roadmaps", path: "/roadmaps", group: "Pages" },
   { title: "Review", path: "/review", group: "Pages", keywords: "spaced repetition due" },
   { title: "Cheat Sheets", path: "/cheatsheets", group: "Pages" },

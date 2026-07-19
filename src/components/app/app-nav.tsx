@@ -13,6 +13,7 @@ import {
   Cpu,
   MessagesSquare,
   RotateCcw,
+  Target,
   type LucideIcon,
 } from "lucide-react";
 import { dueCount, useReview } from "@/lib/review";
@@ -23,6 +24,7 @@ type NavItem = { label: string; href: string; icon: LucideIcon };
 export const APP_NAV: NavItem[] = [
   { label: "DSA Problems", href: "/dsa", icon: Code2 },
   { label: "Progress", href: "/progress", icon: BarChart3 },
+  { label: "Plan", href: "/plan", icon: Target },
   { label: "Roadmaps", href: "/roadmaps", icon: Map },
   { label: "Review", href: "/review", icon: RotateCcw },
   { label: "Cheat Sheets", href: "/cheatsheets", icon: BookOpen },
