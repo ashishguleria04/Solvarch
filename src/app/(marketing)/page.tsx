@@ -227,12 +227,13 @@ export default async function LandingPage() {
           </FadeIn>
 
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-6">
-            {/* Editor + judge */}
+            {/* Editor + judge — anchor tile, distinct surface */}
             <FadeIn className="sm:col-span-2 lg:col-span-4">
-              <GlowCard className="h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
+              <GlowCard className="h-full rounded-xl border border-border bg-gradient-to-br from-card via-card to-primary/[0.05] p-6 transition-colors hover:border-primary/40">
                 <div className="grid h-full gap-6 md:grid-cols-2">
                   <TileHeading
                     icon={Code2}
+                    accent="blue"
                     title="A real editor, a real judge"
                     description={`Solve ${problems.length} problems across ${topics.length} topics in Python, JavaScript, Java, or C++ — progressive hints, editorials, instant verdicts. Or start the timer and grade yourself like an interviewer would.`}
                   />
@@ -267,6 +268,7 @@ export default async function LandingPage() {
               <GlowCard className="h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
                 <TileHeading
                   icon={Network}
+                  accent="cyan"
                   title={`System design, ${systemDesign.length} guides deep`}
                   description="HLD and LLD fundamentals plus full case studies — Twitter, Uber, Netflix — with diagrams, estimation, and trade-offs."
                 />
@@ -296,34 +298,38 @@ export default async function LandingPage() {
               </GlowCard>
             </FadeIn>
 
-            {/* Roadmaps */}
-            <FadeIn delay={0.1} className="lg:col-span-2">
+            {/* Progress — wide anchor tile */}
+            <FadeIn delay={0.1} className="sm:col-span-2 lg:col-span-4">
               <GlowCard className="h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
-                <TileHeading
-                  icon={Map}
-                  title="Guided roadmaps"
-                  description="Blind 75 and Grind 169, resolved against the catalog with week-by-week sections and one progress ring."
-                />
-                <div className="mt-5 space-y-3">
-                  {[
-                    { name: "Blind 75", pct: 64 },
-                    { name: "Grind 169", pct: 31 },
-                  ].map((r) => (
-                    <div key={r.name}>
-                      <div className="flex justify-between text-xs">
-                        <span>{r.name}</span>
-                        <span className="font-mono text-muted-foreground">
-                          {r.pct}%
-                        </span>
-                      </div>
-                      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-secondary">
-                        <div
-                          className="h-full rounded-full bg-gradient-to-r from-primary to-cyan-400"
-                          style={{ width: `${r.pct}%` }}
+                <div className="grid h-full items-center gap-6 md:grid-cols-2">
+                  <TileHeading
+                    icon={LayoutDashboard}
+                    accent="emerald"
+                    title="Progress that stays yours"
+                    description="Streaks, a rolling heatmap, and per-topic coverage — stored locally, exportable as JSON, no account anywhere."
+                  />
+                  <div>
+                    <div className="grid w-max grid-cols-14 gap-1">
+                      {HEAT.map((level, i) => (
+                        <span
+                          key={i}
+                          className={`size-3 rounded-[3px] ${heatClass[level]}`}
                         />
-                      </div>
+                      ))}
                     </div>
-                  ))}
+                    <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-muted-foreground">
+                      <span>
+                        <span className="font-mono text-foreground">142</span> solved
+                      </span>
+                      <span>
+                        <span className="font-mono text-foreground">12</span>-day streak
+                      </span>
+                      <span>
+                        <span className="font-mono text-foreground">9</span>/
+                        {topics.length} topics
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </GlowCard>
             </FadeIn>
@@ -333,6 +339,7 @@ export default async function LandingPage() {
               <GlowCard className="h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
                 <TileHeading
                   icon={RefreshCcw}
+                  accent="amber"
                   title="Spaced repetition"
                   description="Miss a problem and it comes back on a proven ladder until you clear every rung. Passing climbs, failing resets."
                 />
@@ -359,20 +366,34 @@ export default async function LandingPage() {
               </GlowCard>
             </FadeIn>
 
-            {/* Progress */}
+            {/* Roadmaps */}
             <FadeIn delay={0.2} className="lg:col-span-2">
               <GlowCard className="h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
                 <TileHeading
-                  icon={LayoutDashboard}
-                  title="Progress that stays yours"
-                  description="Streaks, a 26-week heatmap, and per-topic coverage — stored locally, exportable as JSON, no account anywhere."
+                  icon={Map}
+                  accent="violet"
+                  title="Guided roadmaps"
+                  description="Blind 75 and Grind 169, resolved against the catalog with week-by-week sections and one progress ring."
                 />
-                <div className="mt-5 grid w-max grid-cols-14 gap-1">
-                  {HEAT.map((level, i) => (
-                    <span
-                      key={i}
-                      className={`size-2.5 rounded-[3px] ${heatClass[level]}`}
-                    />
+                <div className="mt-5 space-y-3">
+                  {[
+                    { name: "Blind 75", pct: 64 },
+                    { name: "Grind 169", pct: 31 },
+                  ].map((r) => (
+                    <div key={r.name}>
+                      <div className="flex justify-between text-xs">
+                        <span>{r.name}</span>
+                        <span className="font-mono text-muted-foreground">
+                          {r.pct}%
+                        </span>
+                      </div>
+                      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-secondary">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-violet-500 to-primary"
+                          style={{ width: `${r.pct}%` }}
+                        />
+                      </div>
+                    </div>
                   ))}
                 </div>
               </GlowCard>
@@ -383,6 +404,7 @@ export default async function LandingPage() {
               <GlowCard className="h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
                 <TileHeading
                   icon={Cpu}
+                  accent="indigo"
                   title="CS fundamentals"
                   description="The theory rounds, structured — diagram-rich topic pages with the questions interviewers actually ask."
                 />
@@ -390,8 +412,9 @@ export default async function LandingPage() {
                   {["Operating Systems", "DBMS", "Networks", "OOP"].map((s) => (
                     <span
                       key={s}
-                      className="rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs text-muted-foreground"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs text-muted-foreground"
                     >
+                      <span className={`size-1.5 rounded-full ${DOTS.indigo}`} />
                       {s}
                     </span>
                   ))}
@@ -404,6 +427,7 @@ export default async function LandingPage() {
               <GlowCard className="h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
                 <TileHeading
                   icon={Building2}
+                  accent="fuchsia"
                   title="Company question banks"
                   description="Problem lists compiled from publicly shared interview experiences — see what each company actually asks."
                 />
@@ -411,8 +435,9 @@ export default async function LandingPage() {
                   {["Google", "Amazon", "Microsoft", "Meta"].map((c) => (
                     <span
                       key={c}
-                      className="rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs text-muted-foreground"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs text-muted-foreground"
                     >
+                      <span className={`size-1.5 rounded-full ${DOTS.fuchsia}`} />
                       {c}
                     </span>
                   ))}
@@ -423,20 +448,29 @@ export default async function LandingPage() {
               </GlowCard>
             </FadeIn>
 
-            {/* Question bank */}
-            <FadeIn delay={0.35} className="lg:col-span-2">
+            {/* Behavioral — full-width tile */}
+            <FadeIn delay={0.35} className="sm:col-span-2 lg:col-span-6">
               <GlowCard className="h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
-                <TileHeading
-                  icon={MessagesSquare}
-                  title="Behavioral & HR answers"
-                  description="Model answers and delivery tips for the rounds that reject strong engineers — not just the coding ones."
-                />
-                <div className="mt-5 space-y-2 text-xs">
-                  <div className="w-fit max-w-full rounded-lg rounded-bl-sm border border-border bg-secondary/60 px-3 py-1.5 text-muted-foreground">
-                    “Tell me about a conflict on your team.”
-                  </div>
-                  <div className="ml-auto w-fit max-w-full rounded-lg rounded-br-sm bg-primary/10 px-3 py-1.5 text-foreground/80 ring-1 ring-primary/20 ring-inset">
-                    Situation → action → result, 90 seconds.
+                <div className="grid h-full items-center gap-6 md:grid-cols-2">
+                  <TileHeading
+                    icon={MessagesSquare}
+                    accent="rose"
+                    title="Behavioral & HR answers"
+                    description="Model answers and delivery tips for the rounds that reject strong engineers — not just the coding ones. Learn the STAR structure and the beats interviewers listen for."
+                  />
+                  <div className="space-y-2 text-xs">
+                    <div className="w-fit max-w-full rounded-lg rounded-bl-sm border border-border bg-secondary/60 px-3 py-1.5 text-muted-foreground">
+                      “Tell me about a conflict on your team.”
+                    </div>
+                    <div className="ml-auto w-fit max-w-full rounded-lg rounded-br-sm bg-primary/10 px-3 py-1.5 text-foreground/80 ring-1 ring-primary/20 ring-inset">
+                      Situation → action → result, 90 seconds.
+                    </div>
+                    <div className="w-fit max-w-full rounded-lg rounded-bl-sm border border-border bg-secondary/60 px-3 py-1.5 text-muted-foreground">
+                      “Why are you leaving your current role?”
+                    </div>
+                    <div className="ml-auto w-fit max-w-full rounded-lg rounded-br-sm bg-primary/10 px-3 py-1.5 text-foreground/80 ring-1 ring-primary/20 ring-inset">
+                      Growth-framed, never a complaint about the last team.
+                    </div>
                   </div>
                 </div>
               </GlowCard>
@@ -464,6 +498,25 @@ export default async function LandingPage() {
         </Container>
       </section>
 
+      {/* Product showcase */}
+      <section className="border-t border-border/60 py-24">
+        <Container>
+          <FadeIn className="mx-auto max-w-2xl text-center">
+            <Eyebrow>The dashboard</Eyebrow>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+              Every rep, on one screen
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              Solve, review, and read — then watch your streak, coverage, and
+              activity build in a dashboard that&apos;s yours alone.
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.1} className="mt-12">
+            <AppShowcase />
+          </FadeIn>
+        </Container>
+      </section>
+
       {/* How it works */}
       <section className="border-t border-border/60 py-24">
         <Container>
@@ -474,7 +527,7 @@ export default async function LandingPage() {
             </h2>
           </FadeIn>
           <div className="relative mt-14 grid gap-10 md:grid-cols-3">
-            <div className="absolute top-5 right-[16%] left-[16%] hidden h-px bg-gradient-to-r from-transparent via-border to-transparent md:block" />
+            <ConnectorLine />
             {steps.map((s, i) => (
               <FadeIn key={s.n} delay={i * 0.12} className="relative text-center">
                 <div className="mx-auto flex size-10 items-center justify-center rounded-full border border-primary/30 bg-background font-mono text-sm text-primary shadow-[0_0_20px_-6px_rgba(59,130,246,0.5)]">
