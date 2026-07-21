@@ -228,7 +228,12 @@
   .animate-marquee {
     animation: marquee-x 40s linear infinite;
   }
-  .marquee-paused:hover .animate-marquee {
+  /* Second row drifts the opposite way for depth. */
+  .animate-marquee-reverse {
+    animation: marquee-x 44s linear infinite reverse;
+  }
+  .marquee-paused:hover .animate-marquee,
+  .marquee-paused:hover .animate-marquee-reverse {
     animation-play-state: paused;
   }
 
@@ -362,6 +367,7 @@
   .animate-aurora-a,
   .animate-aurora-b,
   .animate-marquee,
+  .animate-marquee-reverse,
   .animate-float,
   .animate-float-delayed,
   .border-beam::before {
