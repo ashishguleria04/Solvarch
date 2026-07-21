@@ -11,7 +11,6 @@ import {
   MessagesSquare,
   Network,
   RefreshCcw,
-  Sparkles,
   Star,
   Timer,
 } from "lucide-react";
@@ -23,10 +22,13 @@ import { Button } from "@/components/ui/button";
 import { Container } from "@/components/design-system/container";
 import { FadeIn } from "@/components/design-system/fade-in";
 import { DailyProblemCard } from "@/components/marketing/daily-problem";
+import { HeroBadge } from "@/components/marketing/hero-badge";
 import { HeroCodeWindow } from "@/components/marketing/hero-code-window";
 import { TopicMarquee } from "@/components/marketing/topic-marquee";
 import { GlowCard } from "@/components/marketing/glow-card";
 import { StatCounter } from "@/components/marketing/stat-counter";
+import { AppShowcase } from "@/components/marketing/app-showcase";
+import { ConnectorLine } from "@/components/marketing/connector-line";
 
 /* Deterministic mini-heatmap for the progress tile (levels 0–4). */
 // prettier-ignore
@@ -53,18 +55,50 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Per-feature accent tints for the bento icon chips, so the grid reads as a set
+// of distinct tools instead of a wall of blue. Full literal class strings keep
+// them detectable by Tailwind's scanner.
+type Accent = keyof typeof ACCENTS;
+const ACCENTS = {
+  blue: "bg-primary/10 text-primary ring-primary/20",
+  cyan: "bg-cyan-500/10 text-cyan-600 ring-cyan-500/20 dark:text-cyan-400",
+  violet: "bg-violet-500/10 text-violet-600 ring-violet-500/20 dark:text-violet-400",
+  amber: "bg-amber-500/10 text-amber-600 ring-amber-500/20 dark:text-amber-400",
+  emerald:
+    "bg-emerald-500/10 text-emerald-600 ring-emerald-500/20 dark:text-emerald-400",
+  indigo: "bg-indigo-500/10 text-indigo-600 ring-indigo-500/20 dark:text-indigo-400",
+  fuchsia:
+    "bg-fuchsia-500/10 text-fuchsia-600 ring-fuchsia-500/20 dark:text-fuchsia-400",
+  rose: "bg-rose-500/10 text-rose-600 ring-rose-500/20 dark:text-rose-400",
+} as const;
+
+const DOTS: Record<Accent, string> = {
+  blue: "bg-primary/70",
+  cyan: "bg-cyan-500/70",
+  violet: "bg-violet-500/70",
+  amber: "bg-amber-500/70",
+  emerald: "bg-emerald-500/70",
+  indigo: "bg-indigo-500/70",
+  fuchsia: "bg-fuchsia-500/70",
+  rose: "bg-rose-500/70",
+};
+
 function TileHeading({
   icon: Icon,
   title,
   description,
+  accent = "blue",
 }: {
   icon: React.ComponentType<{ className?: string }>;
   title: string;
   description: string;
+  accent?: Accent;
 }) {
   return (
     <div>
-      <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20 ring-inset">
+      <div
+        className={`flex size-10 items-center justify-center rounded-lg ring-1 ring-inset ${ACCENTS[accent]}`}
+      >
         <Icon className="size-5" />
       </div>
       <h3 className="mt-4 text-base font-semibold">{title}</h3>
@@ -121,10 +155,7 @@ export default async function LandingPage() {
         <Container className="relative py-24 sm:py-32">
           <div className="grid items-center gap-14 lg:grid-cols-2">
             <FadeIn>
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
-                <Sparkles className="size-3.5 text-primary" />
-                Free & open source — no login, no paywall
-              </div>
+              <HeroBadge />
               <h1 className="mt-6 text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
                 <span className="text-gradient">Master the</span>{" "}
                 <span className="text-gradient-brand">tech interview</span>
