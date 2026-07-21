@@ -567,6 +567,48 @@ export default async function LandingPage() {
         </Container>
       </section>
 
+      {/* Open-source / credibility band */}
+      <section className="border-t border-border/60 py-16">
+        <Container>
+          <FadeIn className="flex flex-col items-center gap-6 text-center">
+            <p className="max-w-2xl text-lg text-pretty text-muted-foreground">
+              Solvarch is free, <span className="text-foreground">MIT-licensed</span>,
+              and runs entirely in your browser — your progress never leaves your
+              device, and there&apos;s nothing to sign up for.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              {[
+                "100% free",
+                "MIT licensed",
+                "No accounts",
+                "No tracking",
+                "Next.js",
+                "TypeScript",
+                "Monaco editor",
+              ].map((b) => (
+                <span
+                  key={b}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur"
+                >
+                  <CheckCircle2 className="size-3.5 text-primary" />
+                  {b}
+                </span>
+              ))}
+            </div>
+            <Button asChild variant="outline" size="sm">
+              <a
+                href="https://github.com/ashishguleria04/Solvarch"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Star className="size-4" />
+                Star on GitHub
+              </a>
+            </Button>
+          </FadeIn>
+        </Container>
+      </section>
+
       {/* Final CTA */}
       <section className="py-24">
         <Container>
